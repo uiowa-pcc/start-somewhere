@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resume Experience Sorter</title>
+<style>
+:root{--black:#111;--yellow:#ffcd00;--gray:#666;--light:#f3f3f3;--line:#d8d8d8;--white:#fff;--max:1040px}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--black);background:#fff;line-height:1.45}
+a{color:inherit}.skip{position:absolute;left:-9999px}.skip:focus{left:16px;top:16px;background:#fff;padding:10px;border:2px solid #000;z-index:50}
+header{border-top:8px solid var(--yellow);border-bottom:1px solid var(--line);padding:28px 20px 22px}.wrap{max-width:var(--max);margin:auto}.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#555}h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1;margin:.3rem 0 .6rem}h2{font-size:1.55rem;margin:.2rem 0 .3rem}h3{font-size:1.05rem;margin:0 0 .45rem}.lead{max-width:760px;font-size:1.05rem;margin:0;color:#444}.meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;font-size:.9rem;color:#555}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:24px 0}.step{padding:12px;border:1px solid var(--line);background:#fff;font-weight:700}.step.active{background:var(--light);border-color:#aaa}.step small{display:block;font-weight:400;color:#666}
+main{padding:0 20px 48px}.panel{border:1px solid var(--line);padding:20px;margin:18px 0;background:#fff}.panel.soft{background:#fafafa}.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.field{margin:12px 0}.field label,.legend{display:block;font-weight:700;margin-bottom:6px}.hint{font-size:.88rem;color:#666;margin-top:4px}.req{font-weight:400;color:#555;font-size:.82rem}input,select,textarea{width:100%;font:inherit;padding:10px 11px;border:1px solid #9d9d9d;background:#fff;color:#111}input:focus,select:focus,textarea:focus,button:focus,a:focus{outline:3px solid var(--yellow);outline-offset:2px}textarea{min-height:92px;resize:vertical}
+button,.btn{appearance:none;border:1px solid #111;background:#111;color:#fff;font:inherit;font-weight:700;padding:11px 16px;cursor:pointer;text-decoration:none;display:inline-block}.btn.secondary,button.secondary{background:#fff;color:#111}.btn.light,button.light{background:var(--light);color:#111;border-color:#bbb}.btn[disabled],button[disabled]{background:#e6e6e6;color:#777;border-color:#ccc;cursor:not-allowed}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.idea-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.idea-buttons button{background:#fff;color:#111;border-color:#aaa;padding:8px 10px;font-weight:600}.idea-buttons button[aria-pressed="true"]{background:var(--light);border-color:#777}.idea-prompt{margin:12px 0 0;padding:12px;background:var(--light);border-left:4px solid #999}
+.count{font-weight:700;margin:10px 0}.experience-list{display:grid;gap:10px;margin-top:12px}.experience-card{border:1px solid var(--line);padding:14px;background:#fff}.experience-card .top{display:flex;gap:12px;justify-content:space-between;align-items:start}.experience-card p{margin:.25rem 0;color:#555}.mini-actions{display:flex;gap:8px;flex-wrap:wrap}.mini-actions button{padding:7px 10px;font-size:.88rem;background:#fff;color:#111;border-color:#bbb}.status{margin-top:10px;font-weight:700}.section-card{border:1px solid var(--line);margin:12px 0}.section-head{display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--light);padding:12px 14px}.section-head h3{margin:0;text-transform:uppercase;font-size:.95rem;letter-spacing:.03em}.section-body{padding:6px 14px}.sorted-item{padding:12px 0;border-bottom:1px solid #e5e5e5}.sorted-item:last-child{border-bottom:0}.sorted-title{font-weight:700}.sorted-meta{color:#555;font-size:.92rem}.order-controls button{padding:5px 9px;background:#fff;color:#111;border-color:#aaa}.notice{padding:12px 14px;background:#fff8d9;border-left:4px solid var(--yellow);margin:14px 0}.hidden{display:none!important}.footer-note{color:#666;font-size:.88rem;margin-top:22px}
+@media(max-width:720px){.row,.row3{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.section-head{align-items:flex-start}.experience-card .top{flex-direction:column}.meta{display:block}.meta span{display:block;margin:3px 0}}
+</style>
+</head>
+<body>
+<a class="skip" href="#activity">Skip to activity</a>
+<header><div class="wrap">
+<div class="eyebrow">Quick resume tool</div>
+<h1>Resume Experience Sorter</h1>
+<p class="lead">Decide what belongs on your resume, where it fits, and what an employer should notice first.</p>
+<div class="meta"><span><strong>About 5 minutes</strong></span><span>Your entries stay in this browser unless you choose to continue to the Resume Starter.</span></div>
+</div></header>
+<main id="activity"><div class="wrap">
+<div class="steps" aria-label="Progress">
+<div class="step active" id="stepTab1">1 Add<small>Find experiences</small></div>
+<div class="step" id="stepTab2">2 Organize<small>Build sections</small></div>
+<div class="step" id="stepTab3">3 Build<small>Start your resume</small></div>
+</div>
+<section id="step1">
+<div class="panel soft"><div class="eyebrow">Step 1 of 3</div><h2>Add your experiences</h2><p>Add at least 2 specific roles, projects, or activities. Paid work is only one option.</p>
+<details><summary><strong>Need ideas?</strong> Choose an area to get a specific prompt.</summary>
+<div class="idea-buttons" id="ideaButtons"></div><div id="ideaPrompt" class="idea-prompt hidden" aria-live="polite"></div></details></div>
+<div class="panel"><div class="eyebrow">New experience</div><h3>Use the name you would put on a resume</h3><p class="hint">Be specific: “Food Pantry Volunteer — CommUnity Food Bank” is more useful than “Volunteering.”</p>
+<form id="experienceForm">
+<div class="row"><div class="field"><label for="title">Role, project, or activity name <span class="req">(required)</span></label><input id="title" required autocomplete="off"></div><div class="field"><label for="org">Organization, course, or setting <span class="req">(required)</span></label><input id="org" required autocomplete="off"></div></div>
+<div class="row"><div class="field"><label for="type">Experience category <span class="req">(required)</span></label><select id="type" required><option value="">Choose one</option><option>Job or Internship</option><option>Campus Involvement</option><option>Volunteer Experience</option><option>Class or Project</option><option>Research</option><option>Teaching / Clinical / Field</option><option>Athletics</option><option>Other</option></select><div class="hint">This helps you think broadly about the kinds of experiences you have.</div></div>
+<div class="field"><label for="section">Choose where this should appear on your resume <span class="req">(required)</span></label><select id="section" required><option value="">Choose a section</option><option>Relevant Experience</option><option>Work Experience</option><option>Leadership &amp; Involvement</option><option>Volunteer Experience</option><option>Projects</option><option>Research</option><option>Teaching / Clinical / Field Experience</option><option>Additional Experience</option><option value="__custom__">Create my own section…</option></select><div class="hint">Choose the section name that best helps an employer understand this experience.</div></div></div>
+<div class="field hidden" id="customSectionWrap"><label for="customSection">Your section name <span class="req">(required)</span></label><input id="customSection" autocomplete="off" placeholder="Example: Design Experience"></div>
+<fieldset style="border:0;padding:0;margin:0"><legend class="legend">Dates <span class="req">(required)</span></legend><div class="row3"><div class="field"><label for="startMonth">Start month</label><select id="startMonth" required></select></div><div class="field"><label for="startYear">Start year</label><select id="startYear" required></select></div><div></div></div>
+<div class="row3"><div class="field"><label for="endMonth">End month</label><select id="endMonth" required></select></div><div class="field"><label for="endYear">End year</label><select id="endYear" required></select></div><div class="field" style="align-self:end"><label><input type="checkbox" id="current" style="width:auto;margin-right:8px">I currently do this</label></div></div><div class="hint">Your dates automatically place experiences in reverse chronological order within each section.</div></fieldset>
+<div class="actions"><button type="submit" id="addBtn">Add experience</button><button type="button" class="secondary hidden" id="cancelEdit">Cancel edit</button></div><div class="status" id="formStatus" aria-live="polite"></div>
+</form></div>
+<div class="panel"><div class="count"><span id="experienceCount">0</span> experiences added</div><div id="experienceList" class="experience-list"><p class="hint">Your experiences will appear here.</p></div><div class="actions"><button id="organizeBtn" disabled>Add 2 more to continue</button></div><div class="status" id="step1Status" aria-live="polite"></div></div>
+</section>
+<section id="step2" class="hidden">
+<div class="panel soft"><div class="eyebrow">Step 2 of 3</div><h2>Organize your resume</h2><p>Experiences are automatically sorted by end date within each section. Move whole sections if another order tells your story better.</p></div>
+<div id="organized"></div>
+<div class="actions"><button class="secondary" id="backToAdd">Back to add experiences</button><button id="continueBuild">Continue</button></div>
+</section>
+<section id="step3" class="hidden">
+<div class="panel soft"><div class="eyebrow">Step 3 of 3</div><h2>Your resume experiences are organized</h2><p>Next, bring these sections and experiences into the Resume Starter. You will add your header, education, locations, and bullets there.</p></div>
+<div id="finalOrganized"></div>
+<div class="notice"><strong>Your work will carry over.</strong> The Resume Starter will receive your section names, experience titles, organizations, and dates so you do not have to enter them again.</div>
+<div class="actions"><a class="btn" href="#" id="buildResumeLink">Build My Resume →</a><button class="secondary" id="copyList">Copy My Experiences</button><button class="light" id="backToOrganize">Back</button></div><div class="status" id="copyStatus" aria-live="polite"></div>
+</section>
+<p class="footer-note">Tip: Include experiences that help an employer understand your skills, knowledge, accomplishments, and preparation—not only paid jobs.</p>
+</div></main>
+<script>
+(()=>{
+const STORAGE_KEY='pccResumeBuilderDataV1';
+const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const ideaData={
+'Work / Internship':'Think about paid jobs, internships, campus jobs, seasonal work, or positions where you supported customers, clients, patients, students, or a team.',
+'Campus Involvement':'Think about student organizations, leadership roles, committees, event planning, peer mentoring, or other campus involvement.',
+'Volunteering':'Think about organizations, service events, nonprofits, schools, community programs, or causes where you contributed time or skills.',
+'Class / Project':'Think about a substantial class project, team project, presentation, case study, design, analysis, or assignment related to your goals.',
+'Research':'Think about faculty research, labs, independent research, data collection, literature reviews, or research-based coursework.',
+'Athletics':'Think about varsity, club, or intramural athletics, coaching, team leadership, or other structured athletic involvement.',
+'Teaching / Field':'Think about tutoring, practicum, clinical, student teaching, field placements, observations, or other hands-on preparation.'};
+let experiences=[];let editingId=null;let sectionOrder=[];
+const $=id=>document.getElementById(id);
+function monthOptions(select,placeholder){select.innerHTML=`<option value="">${placeholder}</option>`+months.map((m,i)=>`<option value="${String(i+1).padStart(2,'0')}">${m}</option>`).join('')}
+function yearOptions(select,placeholder){const now=new Date().getFullYear();let html=`<option value="">${placeholder}</option>`;for(let y=now+6;y>=now-25;y--)html+=`<option value="${y}">${y}</option>`;select.innerHTML=html}
+monthOptions($('startMonth'),'Month');monthOptions($('endMonth'),'Month');yearOptions($('startYear'),'Year');yearOptions($('endYear'),'Year');
+$('ideaButtons').innerHTML=Object.keys(ideaData).map(k=>`<button type="button" data-idea="${k}" aria-pressed="false">${k}</button>`).join('');
+$('ideaButtons').addEventListener('click',e=>{const b=e.target.closest('[data-idea]');if(!b)return;document.querySelectorAll('[data-idea]').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');$('ideaPrompt').textContent=ideaData[b.dataset.idea];$('ideaPrompt').classList.remove('hidden')});
+$('section').addEventListener('change',()=>{$('customSectionWrap').classList.toggle('hidden',$('section').value!=='__custom__');$('customSection').required=$('section').value==='__custom__'});
+$('current').addEventListener('change',()=>{const on=$('current').checked;$('endMonth').disabled=on;$('endYear').disabled=on;$('endMonth').required=!on;$('endYear').required=!on;if(on){$('endMonth').value='';$('endYear').value=''}});
+function dateLabel(e){const sm=months[Number(e.startMonth)-1], sy=e.startYear;const end=e.current?'Present':`${months[Number(e.endMonth)-1]} ${e.endYear}`;return `${sm} ${sy}–${end}`}
+function endKey(e){return e.current?999999:Number(`${e.endYear}${e.endMonth||'12'}`)}
+function getSectionValue(){return $('section').value==='__custom__'?$('customSection').value.trim():$('section').value}
+function resetForm(){editingId=null;$('experienceForm').reset();$('customSectionWrap').classList.add('hidden');$('customSection').required=false;$('endMonth').disabled=false;$('endYear').disabled=false;$('endMonth').required=true;$('endYear').required=true;$('addBtn').textContent='Add experience';$('cancelEdit').classList.add('hidden');$('formStatus').textContent=''}
+function renderList(){
+$('experienceCount').textContent=experiences.length;
+$('experienceList').innerHTML=experiences.length?experiences.map(e=>`<article class="experience-card"><div class="top"><div><strong>${escapeHtml(e.title)}</strong><p>${escapeHtml(e.org)} · ${escapeHtml(e.section)}</p><p>${escapeHtml(dateLabel(e))}</p></div><div class="mini-actions"><button type="button" data-edit="${e.id}">Edit</button><button type="button" data-delete="${e.id}">Remove</button></div></div></article>`).join(''):'<p class="hint">Your experiences will appear here.</p>';
+const remain=Math.max(0,2-experiences.length);$('organizeBtn').disabled=remain>0;$('organizeBtn').textContent=remain?`Add ${remain} more to continue`:'Organize my resume';
+}
+$('experienceList').addEventListener('click',e=>{const edit=e.target.dataset.edit,del=e.target.dataset.delete;if(del){experiences=experiences.filter(x=>x.id!==del);renderList();return}if(edit){const x=experiences.find(x=>x.id===edit);if(!x)return;editingId=x.id;$('title').value=x.title;$('org').value=x.org;$('type').value=x.type;const isKnown=[...$('section').options].some(o=>o.value===x.section);if(isKnown){$('section').value=x.section;$('customSectionWrap').classList.add('hidden')}else{$('section').value='__custom__';$('customSection').value=x.section;$('customSectionWrap').classList.remove('hidden');$('customSection').required=true}$('startMonth').value=x.startMonth;$('startYear').value=x.startYear;$('current').checked=x.current;$('current').dispatchEvent(new Event('change'));if(!x.current){$('endMonth').value=x.endMonth;$('endYear').value=x.endYear}$('addBtn').textContent='Save changes';$('cancelEdit').classList.remove('hidden');$('title').focus()}});
+$('cancelEdit').addEventListener('click',resetForm);
+$('experienceForm').addEventListener('submit',e=>{e.preventDefault();const section=getSectionValue();if(!section){$('formStatus').textContent='Choose or name a resume section.';return}const data={id:editingId||crypto.randomUUID(),title:$('title').value.trim(),org:$('org').value.trim(),type:$('type').value,section,startMonth:$('startMonth').value,startYear:$('startYear').value,endMonth:$('current').checked?'':$('endMonth').value,endYear:$('current').checked?'':$('endYear').value,current:$('current').checked};const msg=editingId?'Experience updated.':'Experience added.';if(editingId){experiences=experiences.map(x=>x.id===editingId?data:x)}else{experiences.push(data)}resetForm();renderList();$('formStatus').textContent=msg;$('title').focus()});
+function grouped(){const groups={};experiences.forEach(e=>(groups[e.section]||(groups[e.section]=[])).push(e));Object.values(groups).forEach(arr=>arr.sort((a,b)=>endKey(b)-endKey(a)));const names=Object.keys(groups);sectionOrder=sectionOrder.filter(x=>names.includes(x));names.forEach(n=>{if(!sectionOrder.includes(n))sectionOrder.push(n)});return groups}
+function renderOrganized(targetId,controls=true){const groups=grouped();$(targetId).innerHTML=sectionOrder.map((s,i)=>`<section class="section-card"><div class="section-head"><h3>${escapeHtml(s)}</h3>${controls?`<div class="order-controls"><button type="button" data-up="${i}" aria-label="Move ${escapeHtml(s)} up" ${i===0?'disabled':''}>↑</button> <button type="button" data-down="${i}" aria-label="Move ${escapeHtml(s)} down" ${i===sectionOrder.length-1?'disabled':''}>↓</button></div>`:''}</div><div class="section-body">${groups[s].map(e=>`<div class="sorted-item"><div class="sorted-title">${escapeHtml(e.title)}</div><div class="sorted-meta">${escapeHtml(e.org)} · ${escapeHtml(dateLabel(e))}</div></div>`).join('')}</div></section>`).join('')}
+$('organizeBtn').addEventListener('click',()=>{renderOrganized('organized');showStep(2)});
+$('organized').addEventListener('click',e=>{let i;if(e.target.dataset.up!==undefined){i=Number(e.target.dataset.up);[sectionOrder[i-1],sectionOrder[i]]=[sectionOrder[i],sectionOrder[i-1]];renderOrganized('organized')}if(e.target.dataset.down!==undefined){i=Number(e.target.dataset.down);[sectionOrder[i+1],sectionOrder[i]]=[sectionOrder[i],sectionOrder[i+1]];renderOrganized('organized')}});
+$('backToAdd').addEventListener('click',()=>showStep(1));
+$('continueBuild').addEventListener('click',()=>{renderOrganized('finalOrganized',false);prepareHandoff();showStep(3)});
+$('backToOrganize').addEventListener('click',()=>showStep(2));
+function showStep(n){[1,2,3].forEach(i=>{$(`step${i}`).classList.toggle('hidden',i!==n);$(`stepTab${i}`).classList.toggle('active',i===n)});window.scrollTo({top:0,behavior:'smooth'})}
+function payload(){return {version:1,createdAt:new Date().toISOString(),sectionOrder:[...sectionOrder],experiences:experiences.map(e=>({...e}))}}
+function base64url(obj){const bytes=new TextEncoder().encode(JSON.stringify(obj));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function prepareHandoff(){const data=payload();try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}catch(_){}$('buildResumeLink').href=`resume-starter.html#resumeData=${base64url(data)}`}
+$('copyList').addEventListener('click',async()=>{const groups=grouped();const text=sectionOrder.map(s=>`${s.toUpperCase()}\n${groups[s].map(e=>`${e.title}\n${e.org} | ${dateLabel(e)}`).join('\n\n')}`).join('\n\n');await copyText(text);$('copyStatus').textContent='Copied your organized experience list.'});
+async function copyText(text){try{await navigator.clipboard.writeText(text)}catch(_){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}}
+function escapeHtml(v=''){return v.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+renderList();
+})();
+</script>
+</body>
+</html>
