@@ -1,113 +1,362 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Resume Experience Sorter</title>
-<style>
-:root{--black:#111;--yellow:#ffcd00;--gray:#666;--light:#f3f3f3;--line:#d8d8d8;--white:#fff;--max:1040px}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--black);background:#fff;line-height:1.45}
-a{color:inherit}.skip{position:absolute;left:-9999px}.skip:focus{left:16px;top:16px;background:#fff;padding:10px;border:2px solid #000;z-index:50}
-header{border-top:8px solid var(--yellow);border-bottom:1px solid var(--line);padding:28px 20px 22px}.wrap{max-width:var(--max);margin:auto}.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#555}h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1;margin:.3rem 0 .6rem}h2{font-size:1.55rem;margin:.2rem 0 .3rem}h3{font-size:1.05rem;margin:0 0 .45rem}.lead{max-width:760px;font-size:1.05rem;margin:0;color:#444}.meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;font-size:.9rem;color:#555}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:24px 0}.step{padding:12px;border:1px solid var(--line);background:#fff;font-weight:700}.step.active{background:var(--light);border-color:#aaa}.step small{display:block;font-weight:400;color:#666}
-main{padding:0 20px 48px}.panel{border:1px solid var(--line);padding:20px;margin:18px 0;background:#fff}.panel.soft{background:#fafafa}.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.field{margin:12px 0}.field label,.legend{display:block;font-weight:700;margin-bottom:6px}.hint{font-size:.88rem;color:#666;margin-top:4px}.req{font-weight:400;color:#555;font-size:.82rem}input,select,textarea{width:100%;font:inherit;padding:10px 11px;border:1px solid #9d9d9d;background:#fff;color:#111}input:focus,select:focus,textarea:focus,button:focus,a:focus{outline:3px solid var(--yellow);outline-offset:2px}textarea{min-height:92px;resize:vertical}
-button,.btn{appearance:none;border:1px solid #111;background:#111;color:#fff;font:inherit;font-weight:700;padding:11px 16px;cursor:pointer;text-decoration:none;display:inline-block}.btn.secondary,button.secondary{background:#fff;color:#111}.btn.light,button.light{background:var(--light);color:#111;border-color:#bbb}.btn[disabled],button[disabled]{background:#e6e6e6;color:#777;border-color:#ccc;cursor:not-allowed}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.idea-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.idea-buttons button{background:#fff;color:#111;border-color:#aaa;padding:8px 10px;font-weight:600}.idea-buttons button[aria-pressed="true"]{background:var(--light);border-color:#777}.idea-prompt{margin:12px 0 0;padding:12px;background:var(--light);border-left:4px solid #999}
-.count{font-weight:700;margin:10px 0}.experience-list{display:grid;gap:10px;margin-top:12px}.experience-card{border:1px solid var(--line);padding:14px;background:#fff}.experience-card .top{display:flex;gap:12px;justify-content:space-between;align-items:start}.experience-card p{margin:.25rem 0;color:#555}.mini-actions{display:flex;gap:8px;flex-wrap:wrap}.mini-actions button{padding:7px 10px;font-size:.88rem;background:#fff;color:#111;border-color:#bbb}.status{margin-top:10px;font-weight:700}.section-card{border:1px solid var(--line);margin:12px 0}.section-head{display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--light);padding:12px 14px}.section-head h3{margin:0;text-transform:uppercase;font-size:.95rem;letter-spacing:.03em}.section-body{padding:6px 14px}.sorted-item{padding:12px 0;border-bottom:1px solid #e5e5e5}.sorted-item:last-child{border-bottom:0}.sorted-title{font-weight:700}.sorted-meta{color:#555;font-size:.92rem}.order-controls button{padding:5px 9px;background:#fff;color:#111;border-color:#aaa}.notice{padding:12px 14px;background:#fff8d9;border-left:4px solid var(--yellow);margin:14px 0}.hidden{display:none!important}.footer-note{color:#666;font-size:.88rem;margin-top:22px}
-@media(max-width:720px){.row,.row3{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.section-head{align-items:flex-start}.experience-card .top{flex-direction:column}.meta{display:block}.meta span{display:block;margin:3px 0}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What Could Fit?</title>
+  <style>
+    :root{
+      --black:#151515;
+      --text:#2a2a2a;
+      --muted:#666;
+      --line:#d8d8d8;
+      --soft:#f5f5f5;
+      --soft2:#fafafa;
+      --yellow:#ffcd00;
+      --white:#fff;
+      --radius:14px;
+      --shadow:0 8px 24px rgba(0,0,0,.06);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background:var(--white);
+      line-height:1.5;
+    }
+    .wrap{max-width:960px;margin:0 auto;padding:30px 20px 56px}
+    .eyebrow{font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+    h1{font-size:clamp(2rem,5vw,3.35rem);line-height:1.02;margin:0 0 12px;color:var(--black)}
+    h2{font-size:1.5rem;margin:0 0 8px;color:var(--black)}
+    h3{font-size:1.08rem;margin:0 0 6px;color:var(--black)}
+    p{margin:0 0 12px}
+    .intro{font-size:1.08rem;max-width:760px}
+    .note{background:var(--soft2);border-left:5px solid var(--yellow);padding:14px 16px;margin:20px 0 26px;border-radius:0 10px 10px 0}
+    .progress-wrap{margin:24px 0 10px}
+    .progress-label{font-size:.9rem;color:var(--muted);margin-bottom:6px}
+    .progress{height:8px;background:#ececec;border-radius:999px;overflow:hidden}
+    .progress > div{height:100%;width:25%;background:var(--black);transition:width .2s ease}
+    .panel{display:none;margin-top:26px}
+    .panel.active{display:block}
+    .prompt{font-size:1.05rem;margin-bottom:16px;color:var(--muted)}
+    .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .choice{
+      width:100%;text-align:left;background:var(--white);border:1px solid var(--line);padding:14px 15px;border-radius:12px;
+      cursor:pointer;font-size:1rem;transition:.15s ease;color:var(--text)
+    }
+    .choice:hover,.choice:focus-visible{border-color:#999;outline:3px solid rgba(0,0,0,.08)}
+    .choice.selected{background:#ececec;border-color:#9c9c9c;font-weight:700}
+    .counter{font-size:.9rem;color:var(--muted);margin-top:10px}
+    .actions{display:flex;justify-content:space-between;gap:12px;margin-top:24px;flex-wrap:wrap}
+    button.primary,button.secondary,button.ghost{
+      border:none;border-radius:10px;padding:12px 18px;font-size:1rem;font-weight:700;cursor:pointer
+    }
+    button.primary{background:var(--black);color:var(--white)}
+    button.secondary{background:#e9e9e9;color:var(--black)}
+    button.ghost{background:transparent;color:var(--black);border:1px solid var(--line)}
+    button:disabled{opacity:.45;cursor:not-allowed}
+    .results{display:grid;gap:14px;margin-top:18px}
+    .community-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .community-link{display:inline-block;text-decoration:none;border:1px solid #bdbdbd;border-radius:10px;padding:9px 12px;font-weight:700;color:#1f1f1f;background:#fff}
+    .community-link:hover,.community-link:focus{background:#f1f1f1;outline:2px solid transparent}
+    .community-label{margin-top:14px;font-size:.95rem;color:#555}
+    .result-card{border:1px solid var(--line);border-radius:var(--radius);padding:18px;background:var(--white);box-shadow:var(--shadow)}
+    .result-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+    .badge{display:inline-block;font-size:.78rem;font-weight:700;padding:5px 8px;background:#efefef;border-radius:999px;color:#555;white-space:nowrap}
+    .why{margin-top:8px;color:#4f4f4f}
+    .examples{margin:12px 0 0;padding-left:18px}
+    .examples li{margin:4px 0}
+    .explore-btn{margin-top:14px;background:var(--soft);border:1px solid var(--line);padding:10px 12px;border-radius:9px;font-weight:700;cursor:pointer}
+    .explore-panel{display:none;margin-top:12px;padding:14px;background:var(--soft2);border-radius:10px}
+    .explore-panel.open{display:block}
+    .question-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+    .qchip{padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--white);font-size:.92rem}
+    .summary{margin-top:24px;padding:18px;background:var(--soft2);border-radius:12px}
+    .copybox{white-space:pre-wrap;background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:10px;font-family:inherit}
+    .small{font-size:.9rem;color:var(--muted)}
+    .footer{margin-top:28px;font-size:.9rem;color:var(--muted)}
+    .additional-result{border-style:dashed;background:#fcfcfc}
+    .small{font-size:.9rem;color:var(--muted)}
+
+    @media (max-width:700px){.choices,.question-grid{grid-template-columns:1fr}.wrap{padding:22px 16px 44px}.result-top{display:block}.badge{margin-top:8px}}
+  </style>
 </head>
 <body>
-<a class="skip" href="#activity">Skip to activity</a>
-<header><div class="wrap">
-<div class="eyebrow">Quick resume tool</div>
-<h1>Resume Experience Sorter</h1>
-<p class="lead">Decide what belongs on your resume, where it fits, and what an employer should notice first.</p>
-<div class="meta"><span><strong>About 5 minutes</strong></span><span>Your entries stay in this browser unless you choose to continue to the Resume Starter.</span></div>
-</div></header>
-<main id="activity"><div class="wrap">
-<div class="steps" aria-label="Progress">
-<div class="step active" id="stepTab1">1 Add<small>Find experiences</small></div>
-<div class="step" id="stepTab2">2 Organize<small>Build sections</small></div>
-<div class="step" id="stepTab3">3 Build<small>Start your resume</small></div>
-</div>
-<section id="step1">
-<div class="panel soft"><div class="eyebrow">Step 1 of 3</div><h2>Add your experiences</h2><p>Add at least 2 specific roles, projects, or activities. Paid work is only one option.</p>
-<details><summary><strong>Need ideas?</strong> Choose an area to get a specific prompt.</summary>
-<div class="idea-buttons" id="ideaButtons"></div><div id="ideaPrompt" class="idea-prompt hidden" aria-live="polite"></div></details></div>
-<div class="panel"><div class="eyebrow">New experience</div><h3>Use the name you would put on a resume</h3><p class="hint">Be specific: “Food Pantry Volunteer — CommUnity Food Bank” is more useful than “Volunteering.”</p>
-<form id="experienceForm">
-<div class="row"><div class="field"><label for="title">Role, project, or activity name <span class="req">(required)</span></label><input id="title" required autocomplete="off"></div><div class="field"><label for="org">Organization, course, or setting <span class="req">(required)</span></label><input id="org" required autocomplete="off"></div></div>
-<div class="row"><div class="field"><label for="type">Experience category <span class="req">(required)</span></label><select id="type" required><option value="">Choose one</option><option>Job or Internship</option><option>Campus Involvement</option><option>Volunteer Experience</option><option>Class or Project</option><option>Research</option><option>Teaching / Clinical / Field</option><option>Athletics</option><option>Other</option></select><div class="hint">This helps you think broadly about the kinds of experiences you have.</div></div>
-<div class="field"><label for="section">Choose where this should appear on your resume <span class="req">(required)</span></label><select id="section" required><option value="">Choose a section</option><option>Relevant Experience</option><option>Work Experience</option><option>Leadership &amp; Involvement</option><option>Volunteer Experience</option><option>Projects</option><option>Research</option><option>Teaching / Clinical / Field Experience</option><option>Additional Experience</option><option value="__custom__">Create my own section…</option></select><div class="hint">Choose the section name that best helps an employer understand this experience.</div></div></div>
-<div class="field hidden" id="customSectionWrap"><label for="customSection">Your section name <span class="req">(required)</span></label><input id="customSection" autocomplete="off" placeholder="Example: Design Experience"></div>
-<fieldset style="border:0;padding:0;margin:0"><legend class="legend">Dates <span class="req">(required)</span></legend><div class="row3"><div class="field"><label for="startMonth">Start month</label><select id="startMonth" required></select></div><div class="field"><label for="startYear">Start year</label><select id="startYear" required></select></div><div></div></div>
-<div class="row3"><div class="field"><label for="endMonth">End month</label><select id="endMonth" required></select></div><div class="field"><label for="endYear">End year</label><select id="endYear" required></select></div><div class="field" style="align-self:end"><label><input type="checkbox" id="current" style="width:auto;margin-right:8px">I currently do this</label></div></div><div class="hint">Your dates automatically place experiences in reverse chronological order within each section.</div></fieldset>
-<div class="actions"><button type="submit" id="addBtn">Add experience</button><button type="button" class="secondary hidden" id="cancelEdit">Cancel edit</button></div><div class="status" id="formStatus" aria-live="polite"></div>
-</form></div>
-<div class="panel"><div class="count"><span id="experienceCount">0</span> experiences added</div><div id="experienceList" class="experience-list"><p class="hint">Your experiences will appear here.</p></div><div class="actions"><button id="organizeBtn" disabled>Add 2 more to continue</button></div><div class="status" id="step1Status" aria-live="polite"></div></div>
-</section>
-<section id="step2" class="hidden">
-<div class="panel soft"><div class="eyebrow">Step 2 of 3</div><h2>Organize your resume</h2><p>Experiences are automatically sorted by end date within each section. Move whole sections if another order tells your story better.</p></div>
-<div id="organized"></div>
-<div class="actions"><button class="secondary" id="backToAdd">Back to add experiences</button><button id="continueBuild">Continue</button></div>
-</section>
-<section id="step3" class="hidden">
-<div class="panel soft"><div class="eyebrow">Step 3 of 3</div><h2>Your resume experiences are organized</h2><p>Next, bring these sections and experiences into the Resume Starter. You will add your header, education, locations, and bullets there.</p></div>
-<div id="finalOrganized"></div>
-<div class="notice"><strong>Your work will carry over.</strong> The Resume Starter will receive your section names, experience titles, organizations, and dates so you do not have to enter them again.</div>
-<div class="actions"><a class="btn" href="#" id="buildResumeLink">Build My Resume →</a><button class="secondary" id="copyList">Copy My Experiences</button><button class="light" id="backToOrganize">Back</button></div><div class="status" id="copyStatus" aria-live="polite"></div>
-</section>
-<p class="footer-note">Tip: Include experiences that help an employer understand your skills, knowledge, accomplishments, and preparation—not only paid jobs.</p>
-</div></main>
+  <main class="wrap">
+    <div class="eyebrow">Career Exploration Quick Tool</div>
+    <h1>What Could Fit?</h1>
+    <p class="intro">Start with what you already know about yourself. Choose what matters to you, what catches your attention, and the kinds of work you would like to do more often. We’ll use those clues to suggest broad career directions worth investigating.</p>
+    <div class="note"><strong>These are possibilities, not predictions.</strong> This quick tool is informed by established career-exploration concepts, but it is not a formal or validated assessment. Use your results to generate questions, research options, and notice what you want to learn next.</div>
+
+    <div id="tool">
+      <div class="progress-wrap" aria-label="Progress">
+        <div class="progress-label" id="progressLabel">Step 1 of 4</div>
+        <div class="progress"><div id="progressBar"></div></div>
+      </div>
+
+      <section class="panel active" data-step="1">
+        <h2>What matters to you in your work?</h2>
+        <p class="prompt">Think about the conditions and experiences you would value in future work. Choose 3–5.</p>
+        <div class="choices" id="valuesChoices"></div>
+        <div class="counter" id="valuesCount">0 of 5 selected</div>
+        <div class="actions"><span></span><button class="primary" id="next1" disabled>Next</button></div>
+      </section>
+
+      <section class="panel" data-step="2">
+        <h2>What kinds of topics or problems catch your attention?</h2>
+        <p class="prompt">Choose topics you would genuinely like to understand, work on, or learn more about. You do not have to be good at them already.</p>
+        <div class="choices" id="curiosityChoices"></div>
+        <div class="counter" id="curiosityCount">Choose at least 2</div>
+        <div class="actions"><button class="secondary back">Back</button><button class="primary" id="next2" disabled>Next</button></div>
+      </section>
+
+      <section class="panel" data-step="3">
+        <h2>What kinds of work would you like to spend more time doing?</h2>
+        <p class="prompt">Choose activities that sound satisfying, interesting, or worth trying. Pick 3–6.</p>
+        <div class="choices" id="activityChoices"></div>
+        <div class="counter" id="activityCount">0 selected</div>
+        <div class="actions"><button class="secondary back">Back</button><button class="primary" id="showResults" disabled>Show directions</button></div>
+      </section>
+
+      <section class="panel" data-step="4">
+        <h2>Directions worth investigating</h2>
+        <p class="prompt">Here are three strong connections plus one additional direction you may not have considered. Use them as starting points for research—not answers.</p>
+        <div id="results" class="results"></div>
+
+        <div class="summary" id="noFitBox">
+          <h3>Not seeing yourself here?</h3>
+          <p>That is useful information too. Your results are only starting points, and you do not need to force a fit.</p>
+          <div class="actions" style="margin-top:12px;justify-content:flex-start">
+            <button class="secondary" id="changeSelections">Change my selections</button>
+            <a class="community-link" href="https://careers.uiowa.edu/career-communities" target="_blank" rel="noopener noreferrer">Browse all Career Communities ↗</a>
+          </div>
+          <p class="small" style="margin-top:10px">You can also use Challenge Cards or another exploration activity to start from a different question.</p>
+        </div>
+        <div class="summary">
+          <h3>Your exploration snapshot</h3>
+          <div id="snapshot" class="copybox"></div>
+          <div class="actions" style="margin-top:12px">
+            <button class="ghost" id="copySnapshot">Copy my results</button>
+            <button class="secondary" id="restart">Start over</button>
+          </div>
+          <p class="small" id="copyStatus" aria-live="polite" style="margin-top:8px"></p>
+        </div>
+        <div class="note" style="margin-top:22px"><strong>Next step:</strong> Choose one direction that makes you curious. Look at 2–3 occupations in that area and notice which work activities, settings, and requirements appeal to you—and which do not.</div>
+      </section>
+    </div>
+
+    <p class="footer">Designed as a quick exploration activity. Results are based only on your selections in this tool and should be used to generate questions and possibilities.</p>
+  </main>
+
 <script>
-(()=>{
-const STORAGE_KEY='pccResumeBuilderDataV1';
-const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const ideaData={
-'Work / Internship':'Think about paid jobs, internships, campus jobs, seasonal work, or positions where you supported customers, clients, patients, students, or a team.',
-'Campus Involvement':'Think about student organizations, leadership roles, committees, event planning, peer mentoring, or other campus involvement.',
-'Volunteering':'Think about organizations, service events, nonprofits, schools, community programs, or causes where you contributed time or skills.',
-'Class / Project':'Think about a substantial class project, team project, presentation, case study, design, analysis, or assignment related to your goals.',
-'Research':'Think about faculty research, labs, independent research, data collection, literature reviews, or research-based coursework.',
-'Athletics':'Think about varsity, club, or intramural athletics, coaching, team leadership, or other structured athletic involvement.',
-'Teaching / Field':'Think about tutoring, practicum, clinical, student teaching, field placements, observations, or other hands-on preparation.'};
-let experiences=[];let editingId=null;let sectionOrder=[];
-const $=id=>document.getElementById(id);
-function monthOptions(select,placeholder){select.innerHTML=`<option value="">${placeholder}</option>`+months.map((m,i)=>`<option value="${String(i+1).padStart(2,'0')}">${m}</option>`).join('')}
-function yearOptions(select,placeholder){const now=new Date().getFullYear();let html=`<option value="">${placeholder}</option>`;for(let y=now+6;y>=now-25;y--)html+=`<option value="${y}">${y}</option>`;select.innerHTML=html}
-monthOptions($('startMonth'),'Month');monthOptions($('endMonth'),'Month');yearOptions($('startYear'),'Year');yearOptions($('endYear'),'Year');
-$('ideaButtons').innerHTML=Object.keys(ideaData).map(k=>`<button type="button" data-idea="${k}" aria-pressed="false">${k}</button>`).join('');
-$('ideaButtons').addEventListener('click',e=>{const b=e.target.closest('[data-idea]');if(!b)return;document.querySelectorAll('[data-idea]').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');$('ideaPrompt').textContent=ideaData[b.dataset.idea];$('ideaPrompt').classList.remove('hidden')});
-$('section').addEventListener('change',()=>{$('customSectionWrap').classList.toggle('hidden',$('section').value!=='__custom__');$('customSection').required=$('section').value==='__custom__'});
-$('current').addEventListener('change',()=>{const on=$('current').checked;$('endMonth').disabled=on;$('endYear').disabled=on;$('endMonth').required=!on;$('endYear').required=!on;if(on){$('endMonth').value='';$('endYear').value=''}});
-function dateLabel(e){const sm=months[Number(e.startMonth)-1], sy=e.startYear;const end=e.current?'Present':`${months[Number(e.endMonth)-1]} ${e.endYear}`;return `${sm} ${sy}–${end}`}
-function endKey(e){return e.current?999999:Number(`${e.endYear}${e.endMonth||'12'}`)}
-function getSectionValue(){return $('section').value==='__custom__'?$('customSection').value.trim():$('section').value}
-function resetForm(){editingId=null;$('experienceForm').reset();$('customSectionWrap').classList.add('hidden');$('customSection').required=false;$('endMonth').disabled=false;$('endYear').disabled=false;$('endMonth').required=true;$('endYear').required=true;$('addBtn').textContent='Add experience';$('cancelEdit').classList.add('hidden');$('formStatus').textContent=''}
-function renderList(){
-$('experienceCount').textContent=experiences.length;
-$('experienceList').innerHTML=experiences.length?experiences.map(e=>`<article class="experience-card"><div class="top"><div><strong>${escapeHtml(e.title)}</strong><p>${escapeHtml(e.org)} · ${escapeHtml(e.section)}</p><p>${escapeHtml(dateLabel(e))}</p></div><div class="mini-actions"><button type="button" data-edit="${e.id}">Edit</button><button type="button" data-delete="${e.id}">Remove</button></div></div></article>`).join(''):'<p class="hint">Your experiences will appear here.</p>';
-const remain=Math.max(0,2-experiences.length);$('organizeBtn').disabled=remain>0;$('organizeBtn').textContent=remain?`Add ${remain} more to continue`:'Organize my resume';
+const values = [
+  {label:'Doing work that feels meaningful', codes:['relationships','achievement']},
+  {label:'Helping or contributing to others', codes:['relationships']},
+  {label:'Having stability and dependable opportunities', codes:['conditions']},
+  {label:'Having strong earning potential', codes:['conditions','recognition']},
+  {label:'Having flexibility in when, where, or how I work', codes:['independence','conditions']},
+  {label:'Having work-life balance and manageable demands', codes:['conditions']},
+  {label:'Having independence in how I approach my work', codes:['independence']},
+  {label:'Having room to be creative or try new approaches', codes:['independence','achievement']},
+  {label:'Learning, growing, and taking on new challenges', codes:['achievement']},
+  {label:'Working with people I respect and enjoy', codes:['relationships','support']},
+  {label:'Having supportive leadership and a healthy workplace', codes:['support']},
+  {label:'Having opportunities to lead, advance, or influence decisions', codes:['recognition']},
+  {label:'Having variety rather than doing the same thing every day', codes:['independence','conditions']},
+  {label:'Having clear expectations and useful feedback', codes:['support','conditions']}
+];
+
+const curiosities = [
+  {label:'Mental health, well-being, and human development', codes:['social','investigative']},
+  {label:'Teaching, learning, and how people develop skills', codes:['social','investigative']},
+  {label:'Health, medicine, and the human body', codes:['investigative','social']},
+  {label:'Science, discovery, and how the natural world works', codes:['investigative','realistic']},
+  {label:'Environment, climate, and sustainability', codes:['investigative','realistic','social']},
+  {label:'Technology, computing, and digital systems', codes:['investigative','realistic']},
+  {label:'Data, patterns, and using evidence to answer questions', codes:['investigative','conventional']},
+  {label:'Engineering, building, and how things work', codes:['realistic','investigative']},
+  {label:'Art, media, storytelling, and culture', codes:['artistic']},
+  {label:'Writing, language, communication, and ideas', codes:['artistic','social']},
+  {label:'Business, organizations, and how work gets done', codes:['enterprising','conventional']},
+  {label:'Money, markets, economics, and financial decisions', codes:['enterprising','conventional','investigative']},
+  {label:'Law, justice, rights, and public issues', codes:['enterprising','social','investigative']},
+  {label:'Government, policy, and how systems shape communities', codes:['social','enterprising','investigative']},
+  {label:'Communities, inequality, and social change', codes:['social','investigative']},
+  {label:'Sports, performance, recreation, and movement', codes:['realistic','social','enterprising']}
+];
+
+const activities = [
+  {label:'Build, make, repair, or work hands-on', codes:['realistic']},
+  {label:'Analyze information, data, or complex problems', codes:['investigative']},
+  {label:'Research and learn deeply about a topic', codes:['investigative']},
+  {label:'Write, create, perform, or tell stories', codes:['artistic']},
+  {label:'Design something new or improve how it looks/feels', codes:['artistic']},
+  {label:'Teach, explain, coach, or help someone learn', codes:['social']},
+  {label:'Listen, support, counsel, or care for people', codes:['social']},
+  {label:'Advocate for people or improve communities', codes:['social','enterprising']},
+  {label:'Lead, persuade, negotiate, or influence decisions', codes:['enterprising']},
+  {label:'Coordinate people, projects, events, or programs', codes:['enterprising','conventional']},
+  {label:'Organize information and keep systems running smoothly', codes:['conventional']},
+  {label:'Work with numbers, records, details, or processes', codes:['conventional']},
+  {label:'Communicate ideas to different audiences', codes:['social','artistic','enterprising']},
+  {label:'Solve practical problems and improve how something works', codes:['realistic','investigative']},
+  {label:'Evaluate programs, products, policies, or outcomes', codes:['investigative','conventional']}
+];
+
+const directions = [
+  {name:'Arts, Culture & Creative Work', riasec:['A','S'], values:['independence','achievement'], topics:['Art, media, storytelling, and culture','Writing, language, communication, and ideas'], acts:['Write, create, perform, or tell stories','Generate ideas and try creative approaches','Communicate ideas to different audiences'], examples:['Arts administration and museums','Publishing and writing','Film, music, theatre, or production','Creative programming and cultural organizations'], communities:[['Arts, Media & Entertainment','https://careers.uiowa.edu/career-communities/arts-media-entertainment']]},
+  {name:'Media, Communication & Storytelling', riasec:['A','E','S'], values:['achievement','recognition'], topics:['Writing, language, communication, and ideas','Art, media, storytelling, and culture','Business, organizations, and how work gets done'], acts:['Write, create, perform, or tell stories','Communicate ideas to different audiences','Lead, persuade, negotiate, or influence decisions'], examples:['Public relations and strategic communication','Journalism and media','Content and digital communication','Marketing communication'], communities:[['Arts, Media & Entertainment','https://careers.uiowa.edu/career-communities/arts-media-entertainment'],['Business, Entrepreneurship & Leadership','https://careers.uiowa.edu/career-communities/business-entrepreneurship-leadership']]},
+  {name:'Design & User Experience', riasec:['A','I','R'], values:['independence','achievement'], topics:['Designing products, spaces, or experiences','Technology, computing, and digital systems','Art, media, storytelling, and culture'], acts:['Design something new or improve how it looks/feels','Generate ideas and try creative approaches','Analyze information, data, or complex problems'], examples:['UX/UI and interaction design','Graphic and communication design','Product or service design','Experience design'], communities:[['Arts, Media & Entertainment','https://careers.uiowa.edu/career-communities/arts-media-entertainment'],['Data & Information Technology','https://careers.uiowa.edu/career-communities/data-information-technology']]},
+  {name:'Business Strategy & Operations', riasec:['E','C','I'], values:['achievement','recognition','conditions'], topics:['Business, organizations, and how work gets done','Data, patterns, and using evidence to answer questions'], acts:['Coordinate people, projects, events, or programs','Plan carefully and create structure from complexity','Analyze information, data, or complex problems','Start initiatives, make decisions, or take calculated risks'], examples:['Business analysis','Operations','Consulting','Supply chain and process improvement'], communities:[['Business, Entrepreneurship & Leadership','https://careers.uiowa.edu/career-communities/business-entrepreneurship-leadership']]},
+  {name:'Entrepreneurship & Innovation', riasec:['E','A','I'], values:['independence','achievement','recognition'], topics:['Business, organizations, and how work gets done','Designing products, spaces, or experiences','Technology, computing, and digital systems'], acts:['Start initiatives, make decisions, or take calculated risks','Lead, persuade, negotiate, or influence decisions','Generate ideas and try creative approaches'], examples:['Entrepreneurship','New product or service development','Innovation programs','Small business and venture work'], communities:[['Business, Entrepreneurship & Leadership','https://careers.uiowa.edu/career-communities/business-entrepreneurship-leadership']]},
+  {name:'Finance, Economics & Risk', riasec:['C','E','I'], values:['conditions','recognition','achievement'], topics:['Money, markets, economics, and financial decisions','Data, patterns, and using evidence to answer questions','Business, organizations, and how work gets done'], acts:['Work with numbers, records, details, or processes','Analyze information, data, or complex problems','Plan carefully and create structure from complexity'], examples:['Finance and banking','Accounting','Economics and forecasting','Insurance, actuarial, or risk analysis'], communities:[['Business, Entrepreneurship & Leadership','https://careers.uiowa.edu/career-communities/business-entrepreneurship-leadership'],['Data & Information Technology','https://careers.uiowa.edu/career-communities/data-information-technology']]},
+  {name:'Data, Analytics & Information', riasec:['I','C'], values:['achievement','independence'], topics:['Data, patterns, and using evidence to answer questions','Technology, computing, and digital systems','Money, markets, economics, and financial decisions'], acts:['Analyze information, data, or complex problems','Work with numbers, records, details, or processes','Evaluate programs, products, policies, or outcomes'], examples:['Data analytics','Business intelligence','Statistics and decision support','Information management'], communities:[['Data & Information Technology','https://careers.uiowa.edu/career-communities/data-information-technology']]},
+  {name:'Computing & Technology', riasec:['I','R','C'], values:['achievement','independence','conditions'], topics:['Technology, computing, and digital systems','Data, patterns, and using evidence to answer questions','Engineering, building, and how things work'], acts:['Use tools, equipment, technology, or technical systems','Analyze information, data, or complex problems','Solve practical problems and improve how something works'], examples:['Software and web development','Cybersecurity','IT systems and infrastructure','Technology consulting or product work'], communities:[['Data & Information Technology','https://careers.uiowa.edu/career-communities/data-information-technology']]},
+  {name:'Engineering, Product & Applied Design', riasec:['R','I'], values:['achievement','independence'], topics:['Engineering, building, and how things work','Designing products, spaces, or experiences','Technology, computing, and digital systems'], acts:['Build, make, repair, or work hands-on','Solve practical problems and improve how something works','Design something new or improve how it looks/feels'], examples:['Engineering disciplines','Product development','Manufacturing and quality','Technical design and systems'], communities:[['Engineering Career Services','https://engineering.uiowa.edu/career-services']]},
+  {name:'Scientific Research & Discovery', riasec:['I','R'], values:['achievement','independence'], topics:['Science, discovery, and how the natural world works','Health, medicine, and the human body','Environment, climate, and sustainability'], acts:['Investigate questions and gather evidence','Research and learn deeply about a topic','Analyze information, data, or complex problems'], examples:['Laboratory and field research','Biological or physical sciences','Clinical research','Scientific communication'], communities:[['Science Research','https://careers.uiowa.edu/career-communities/science-research']]},
+  {name:'Environment & Sustainability', riasec:['I','R','S'], values:['relationships','achievement'], topics:['Environment, climate, and sustainability','Science, discovery, and how the natural world works','Government, policy, and how systems shape communities'], acts:['Investigate questions and gather evidence','Solve practical problems and improve how something works','Advocate for people or improve communities'], examples:['Environmental science','Conservation and natural resources','Sustainability','Environmental policy and planning'], communities:[['Environment & Sustainability','https://careers.uiowa.edu/career-communities/environment-sustainability'],['Science Research','https://careers.uiowa.edu/career-communities/science-research']]},
+  {name:'Healthcare & Clinical Work', riasec:['S','I','R'], values:['relationships','achievement','conditions'], topics:['Health, medicine, and the human body','Mental health, well-being, and human development','Science, discovery, and how the natural world works'], acts:['Listen, support, counsel, or care for people','Investigate questions and gather evidence','Build, make, repair, or work hands-on'], examples:['Clinical and allied health professions','Nursing and patient care','Rehabilitation and therapy','Diagnostic and health science roles'], communities:[['Health & Wellness','https://careers.uiowa.edu/career-communities/health-wellness']]},
+  {name:'Public Health, Wellness & Health Education', riasec:['S','I','E'], values:['relationships','achievement'], topics:['Health, medicine, and the human body','Communities, inequality, and social change','Teaching, learning, and how people develop skills'], acts:['Teach, explain, coach, or help someone learn','Advocate for people or improve communities','Evaluate programs, products, policies, or outcomes'], examples:['Public health','Health promotion and education','Community health','Wellness and prevention programs'], communities:[['Health & Wellness','https://careers.uiowa.edu/career-communities/health-wellness']]},
+  {name:'Teaching, Learning & Education', riasec:['S','A','I'], values:['relationships','achievement','support'], topics:['Teaching, learning, and how people develop skills','People, behavior, and relationships','Writing, language, communication, and ideas'], acts:['Teach, explain, coach, or help someone learn','Communicate ideas to different audiences','Plan carefully and create structure from complexity'], examples:['K–12 teaching','Curriculum and instructional design','Educational technology','Academic and learning support'], communities:[['Education K–12','https://careers.uiowa.edu/career-communities/education-k-12'],['Helping & Counseling','https://careers.uiowa.edu/career-communities/helping-counseling']]},
+  {name:'Counseling & Human Services', riasec:['S','I'], values:['relationships','support','achievement'], topics:['Mental health, well-being, and human development','People, behavior, and relationships','Communities, inequality, and social change'], acts:['Listen, support, counsel, or care for people','Advocate for people or improve communities','Teach, explain, coach, or help someone learn'], examples:['Counseling and mental health services','Social work','Rehabilitation services','Human and family services'], communities:[['Helping & Counseling','https://careers.uiowa.edu/career-communities/helping-counseling']]},
+  {name:'Government, Policy & Public Affairs', riasec:['E','S','I'], values:['relationships','achievement','recognition'], topics:['Government, policy, and how systems shape communities','Law, justice, rights, and public issues','Communities, inequality, and social change'], acts:['Analyze information, data, or complex problems','Communicate ideas to different audiences','Advocate for people or improve communities'], examples:['Policy analysis','Public administration','Legislative and public affairs','Community or economic development'], communities:[['Law & Public Service','https://careers.uiowa.edu/career-communities/law-public-service']]},
+  {name:'Law, Justice & Advocacy', riasec:['E','S','I'], values:['achievement','recognition','relationships'], topics:['Law, justice, rights, and public issues','Government, policy, and how systems shape communities','People, behavior, and relationships'], acts:['Lead, persuade, negotiate, or influence decisions','Advocate for people or improve communities','Investigate questions and gather evidence'], examples:['Legal professions','Criminal justice','Compliance and investigations','Advocacy and dispute resolution'], communities:[['Law & Public Service','https://careers.uiowa.edu/career-communities/law-public-service']]},
+  {name:'Nonprofit, Community & Social Impact', riasec:['S','E','C'], values:['relationships','support','achievement'], topics:['Communities, inequality, and social change','People, behavior, and relationships','Government, policy, and how systems shape communities'], acts:['Advocate for people or improve communities','Coordinate people, projects, events, or programs','Communicate ideas to different audiences'], examples:['Nonprofit programs','Community engagement','Youth and family programs','Volunteer or service programs'], communities:[['Helping & Counseling','https://careers.uiowa.edu/career-communities/helping-counseling'],['Law & Public Service','https://careers.uiowa.edu/career-communities/law-public-service']]},
+  {name:'Human Resources & Organizational Development', riasec:['S','E','C'], values:['relationships','support','recognition'], topics:['Business, organizations, and how work gets done','People, behavior, and relationships','Teaching, learning, and how people develop skills'], acts:['Listen, support, counsel, or care for people','Teach, explain, coach, or help someone learn','Coordinate people, projects, events, or programs'], examples:['Human resources','Talent and learning development','Employee experience','Organizational development'], communities:[['Business, Entrepreneurship & Leadership','https://careers.uiowa.edu/career-communities/business-entrepreneurship-leadership'],['Helping & Counseling','https://careers.uiowa.edu/career-communities/helping-counseling']]},
+  {name:'Research, Evaluation & Insights', riasec:['I','C','S'], values:['achievement','independence'], topics:['Data, patterns, and using evidence to answer questions','People, behavior, and relationships','Communities, inequality, and social change'], acts:['Evaluate programs, products, policies, or outcomes','Research and learn deeply about a topic','Analyze information, data, or complex problems'], examples:['Program evaluation','Social or behavioral research','Market/user research','Institutional research'], communities:[['Science Research','https://careers.uiowa.edu/career-communities/science-research'],['Data & Information Technology','https://careers.uiowa.edu/career-communities/data-information-technology']]},
+  {name:'Project, Program & Operations Management', riasec:['E','C','S'], values:['achievement','recognition','support'], topics:['Business, organizations, and how work gets done','Government, policy, and how systems shape communities'], acts:['Coordinate people, projects, events, or programs','Plan carefully and create structure from complexity','Organize information and keep systems running smoothly'], examples:['Project management','Program management','Event and operations coordination','Implementation and process management'], communities:[['Business, Entrepreneurship & Leadership','https://careers.uiowa.edu/career-communities/business-entrepreneurship-leadership']]},
+  {name:'Sports, Recreation & Performance', riasec:['R','S','E'], values:['relationships','achievement'], topics:['Sports, performance, recreation, and movement','Health, medicine, and the human body','Business, organizations, and how work gets done'], acts:['Teach, explain, coach, or help someone learn','Coordinate people, projects, events, or programs','Build, make, repair, or work hands-on'], examples:['Sport and recreation programs','Coaching and performance','Athletics administration','Fitness and wellness'], communities:[['Health & Wellness','https://careers.uiowa.edu/career-communities/health-wellness'],['Business, Entrepreneurship & Leadership','https://careers.uiowa.edu/career-communities/business-entrepreneurship-leadership']]}
+];
+
+const state={values:new Set(),curiosities:new Set(),activities:new Set()};
+function renderChoices(items, containerId, bucket, max=null){
+  const el=document.getElementById(containerId);
+  items.forEach(item=>{
+    const b=document.createElement('button');
+    b.type='button'; b.className='choice'; b.textContent=item.label; b.setAttribute('aria-pressed','false');
+    b.addEventListener('click',()=>{
+      const set=state[bucket];
+      if(set.has(item.label)){set.delete(item.label);b.classList.remove('selected');b.setAttribute('aria-pressed','false');}
+      else{
+        if(max && set.size>=max) return;
+        set.add(item.label);b.classList.add('selected');b.setAttribute('aria-pressed','true');
+      }
+      updateControls();
+    });
+    el.appendChild(b);
+  });
 }
-$('experienceList').addEventListener('click',e=>{const edit=e.target.dataset.edit,del=e.target.dataset.delete;if(del){experiences=experiences.filter(x=>x.id!==del);renderList();return}if(edit){const x=experiences.find(x=>x.id===edit);if(!x)return;editingId=x.id;$('title').value=x.title;$('org').value=x.org;$('type').value=x.type;const isKnown=[...$('section').options].some(o=>o.value===x.section);if(isKnown){$('section').value=x.section;$('customSectionWrap').classList.add('hidden')}else{$('section').value='__custom__';$('customSection').value=x.section;$('customSectionWrap').classList.remove('hidden');$('customSection').required=true}$('startMonth').value=x.startMonth;$('startYear').value=x.startYear;$('current').checked=x.current;$('current').dispatchEvent(new Event('change'));if(!x.current){$('endMonth').value=x.endMonth;$('endYear').value=x.endYear}$('addBtn').textContent='Save changes';$('cancelEdit').classList.remove('hidden');$('title').focus()}});
-$('cancelEdit').addEventListener('click',resetForm);
-$('experienceForm').addEventListener('submit',e=>{e.preventDefault();const section=getSectionValue();if(!section){$('formStatus').textContent='Choose or name a resume section.';return}const data={id:editingId||crypto.randomUUID(),title:$('title').value.trim(),org:$('org').value.trim(),type:$('type').value,section,startMonth:$('startMonth').value,startYear:$('startYear').value,endMonth:$('current').checked?'':$('endMonth').value,endYear:$('current').checked?'':$('endYear').value,current:$('current').checked};const msg=editingId?'Experience updated.':'Experience added.';if(editingId){experiences=experiences.map(x=>x.id===editingId?data:x)}else{experiences.push(data)}resetForm();renderList();$('formStatus').textContent=msg;$('title').focus()});
-function grouped(){const groups={};experiences.forEach(e=>(groups[e.section]||(groups[e.section]=[])).push(e));Object.values(groups).forEach(arr=>arr.sort((a,b)=>endKey(b)-endKey(a)));const names=Object.keys(groups);sectionOrder=sectionOrder.filter(x=>names.includes(x));names.forEach(n=>{if(!sectionOrder.includes(n))sectionOrder.push(n)});return groups}
-function renderOrganized(targetId,controls=true){const groups=grouped();$(targetId).innerHTML=sectionOrder.map((s,i)=>`<section class="section-card"><div class="section-head"><h3>${escapeHtml(s)}</h3>${controls?`<div class="order-controls"><button type="button" data-up="${i}" aria-label="Move ${escapeHtml(s)} up" ${i===0?'disabled':''}>↑</button> <button type="button" data-down="${i}" aria-label="Move ${escapeHtml(s)} down" ${i===sectionOrder.length-1?'disabled':''}>↓</button></div>`:''}</div><div class="section-body">${groups[s].map(e=>`<div class="sorted-item"><div class="sorted-title">${escapeHtml(e.title)}</div><div class="sorted-meta">${escapeHtml(e.org)} · ${escapeHtml(dateLabel(e))}</div></div>`).join('')}</div></section>`).join('')}
-$('organizeBtn').addEventListener('click',()=>{renderOrganized('organized');showStep(2)});
-$('organized').addEventListener('click',e=>{let i;if(e.target.dataset.up!==undefined){i=Number(e.target.dataset.up);[sectionOrder[i-1],sectionOrder[i]]=[sectionOrder[i],sectionOrder[i-1]];renderOrganized('organized')}if(e.target.dataset.down!==undefined){i=Number(e.target.dataset.down);[sectionOrder[i+1],sectionOrder[i]]=[sectionOrder[i],sectionOrder[i+1]];renderOrganized('organized')}});
-$('backToAdd').addEventListener('click',()=>showStep(1));
-$('continueBuild').addEventListener('click',()=>{renderOrganized('finalOrganized',false);prepareHandoff();showStep(3)});
-$('backToOrganize').addEventListener('click',()=>showStep(2));
-function showStep(n){[1,2,3].forEach(i=>{$(`step${i}`).classList.toggle('hidden',i!==n);$(`stepTab${i}`).classList.toggle('active',i===n)});window.scrollTo({top:0,behavior:'smooth'})}
-function payload(){return {version:1,createdAt:new Date().toISOString(),sectionOrder:[...sectionOrder],experiences:experiences.map(e=>({...e}))}}
-function base64url(obj){const bytes=new TextEncoder().encode(JSON.stringify(obj));let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
-function prepareHandoff(){const data=payload();try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}catch(_){}$('buildResumeLink').href=`resume-starter.html#resumeData=${base64url(data)}`}
-$('copyList').addEventListener('click',async()=>{const groups=grouped();const text=sectionOrder.map(s=>`${s.toUpperCase()}\n${groups[s].map(e=>`${e.title}\n${e.org} | ${dateLabel(e)}`).join('\n\n')}`).join('\n\n');await copyText(text);$('copyStatus').textContent='Copied your organized experience list.'});
-async function copyText(text){try{await navigator.clipboard.writeText(text)}catch(_){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}}
-function escapeHtml(v=''){return v.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-renderList();
-})();
+renderChoices(values,'valuesChoices','values',5);
+renderChoices(curiosities,'curiosityChoices','curiosities');
+renderChoices(activities,'activityChoices','activities',6);
+
+function updateControls(){
+  document.getElementById('valuesCount').textContent=`${state.values.size} of 5 selected — choose at least 3`;
+  document.getElementById('curiosityCount').textContent=`${state.curiosities.size} selected — choose at least 2`;
+  document.getElementById('activityCount').textContent=`${state.activities.size} selected — choose 3 to 6`;
+  document.getElementById('next1').disabled=state.values.size<3;
+  document.getElementById('next2').disabled=state.curiosities.size<2;
+  document.getElementById('showResults').disabled=state.activities.size<3;
+}
+
+let step=1;
+function goTo(n){
+  step=n;
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',Number(p.dataset.step)===n));
+  document.getElementById('progressLabel').textContent=`Step ${n} of 4`;
+  document.getElementById('progressBar').style.width=`${n*25}%`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('next1').onclick=()=>goTo(2);
+document.getElementById('next2').onclick=()=>goTo(3);
+document.querySelectorAll('.back').forEach(btn=>btn.addEventListener('click',()=>goTo(step-1)));
+document.getElementById('showResults').onclick=()=>{buildResults();goTo(4)};
+
+function selectedCodes(items, selectedSet){
+  const codes=[];
+  items.filter(x=>selectedSet.has(x.label)).forEach(x=>codes.push(...x.codes));
+  return codes;
+}
+
+function scoreDirection(d){
+  const valueCodes=selectedCodes(values,state.values);
+  const interestCodes=selectedCodes(curiosities,state.curiosities);
+  const activityCodes=selectedCodes(activities,state.activities);
+  const valueMatch=d.values.reduce((n,c)=>n+valueCodes.filter(x=>x===c).length,0);
+  const riasecMap={realistic:'R',investigative:'I',artistic:'A',social:'S',enterprising:'E',conventional:'C'};
+  const interestRIASEC=interestCodes.map(c=>riasecMap[c]).filter(Boolean);
+  const activityRIASEC=activityCodes.map(c=>riasecMap[c]).filter(Boolean);
+  const interestMatch=d.riasec.reduce((n,c)=>n+interestRIASEC.filter(x=>x===c).length,0);
+  const activityMatch=d.riasec.reduce((n,c)=>n+activityRIASEC.filter(x=>x===c).length,0);
+  const topicMatches=[...state.curiosities].filter(x=>d.topics.includes(x));
+  const actMatches=[...state.activities].filter(x=>d.acts.includes(x));
+  const valueLabels=[...state.values].filter(label=>{
+    const item=values.find(v=>v.label===label);
+    return item && item.codes.some(c=>d.values.includes(c));
+  });
+  // Activities and topics carry the most weight; values refine rather than determine fit.
+  const score=(topicMatches.length*5)+(actMatches.length*5)+(interestMatch*1.25)+(activityMatch*1.25)+(valueMatch*0.75);
+  const matches=[...topicMatches.slice(0,2),...actMatches.slice(0,2),...valueLabels.slice(0,1)];
+  return {score,matches};
+}
+
+function buildResults(){
+  const ranked=directions.map(d=>({...d,...scoreDirection(d)})).sort((a,b)=>b.score-a.score || a.name.localeCompare(b.name));
+  const strongest=ranked.slice(0,3);
+  const additional=ranked[3];
+  const top=additional ? [...strongest, additional] : strongest;
+  const results=document.getElementById('results');
+  results.innerHTML='';
+  top.forEach((d,i)=>{
+    const matched = d.matches.slice(0,4);
+    const card=document.createElement('article'); card.className='result-card'+(i===3?' additional-result':'');
+    card.innerHTML=`
+      <div class="result-top">
+        <div>${i===3?'<p class="small"><strong>A less-obvious possibility</strong></p>':''}<h3>${d.name}</h3><p class="why"><strong>Why it appeared:</strong> ${matched.length ? 'Connects with '+matched.join(', ')+'.' : 'It shares themes with several of your selections.'}</p></div>
+        <span class="badge">${i<3?(i===0?'Strong connection':'Strong connection'):'You might also investigate'}</span>
+      </div>
+      <ul class="examples">${d.examples.map(x=>`<li>${x}</li>`).join('')}</ul>
+      <div class="community-label"><strong>University of Iowa resources:</strong> Explore the Career Community page${d.communities?.length>1?'s':''} that connect with this direction.</div>
+      <div class="community-links">${(d.communities||[]).map(c=>`<a class="community-link" href="${c[1]}" target="_blank" rel="noopener noreferrer">${c[0]} ↗</a>`).join('')}</div>
+      <button type="button" class="explore-btn">Explore this</button>
+      <div class="explore-panel">
+        <strong>Questions to investigate:</strong>
+        <div class="question-grid">
+          <div class="qchip">What careers are in this area?</div>
+          <div class="qchip">What do people actually do?</div>
+          <div class="qchip">What majors could connect?</div>
+          <div class="qchip">What skills are important?</div>
+          <div class="qchip">What are the pay and outlook?</div>
+          <div class="qchip">How could I try this out?</div>
+        </div>
+      </div>`;
+    card.querySelector('.explore-btn').addEventListener('click',e=>{
+      const panel=card.querySelector('.explore-panel');
+      panel.classList.toggle('open');
+      e.currentTarget.textContent=panel.classList.contains('open')?'Hide questions':'Explore this';
+    });
+    results.appendChild(card);
+  });
+  const snapshot=`What matters to me: ${[...state.values].join(', ')}\n\nTopics/problems that catch my attention: ${[...state.curiosities].join(', ')}\n\nKinds of work I'd like to do more of: ${[...state.activities].join(', ')}\n\nDirections worth investigating: ${top.map(x=>x.name).join(', ')}`;
+  document.getElementById('snapshot').textContent=snapshot;
+}
+
+document.getElementById('copySnapshot').onclick=async()=>{
+  const text=document.getElementById('snapshot').textContent;
+  try{await navigator.clipboard.writeText(text);document.getElementById('copyStatus').textContent='Copied to clipboard.';}
+  catch(e){document.getElementById('copyStatus').textContent='Select the text above and copy it manually.';}
+};
+
+document.getElementById('changeSelections').onclick=()=>goTo(1);
+
+document.getElementById('restart').onclick=()=>{
+  state.values.clear();state.curiosities.clear();state.activities.clear();
+  document.querySelectorAll('.choice.selected').forEach(b=>{b.classList.remove('selected');b.setAttribute('aria-pressed','false')});
+  updateControls();document.getElementById('copyStatus').textContent='';goTo(1);
+};
+
+updateControls();
 </script>
 </body>
 </html>
