@@ -116,9 +116,9 @@
 <body>
   <a class="skip" href="#tool">Skip to activity</a>
   <main class="wrap">
-    <h1>What Could Fit?</h1>
-    <p class="intro">Start with what you already know about yourself. Choose what matters to you, what catches your attention, and the kinds of work you would like to do more often. We’ll use those clues to suggest broad career directions worth investigating.</p>
-    <div class="note"><strong>These are possibilities, not predictions.</strong> This quick tool is informed by established career-exploration concepts, but it is not a formal or validated assessment. Use your results to generate questions, research options, and notice what you want to learn next.</div>
+    <h1>Start Somewhere</h1>
+    <p class="intro">Not sure what you want to do yet? You do not need a career goal to get started. Choose a few things that sound important, interesting, or worth trying. We’ll turn those reactions into a handful of career directions you can explore next.</p>
+    <div class="note"><strong>This is a starting point, not an assessment.</strong> Your results are meant to give you a few places to begin—not tell you what you should do. Notice what makes you curious, what does not, and what you want to learn more about.</div>
 
     <div id="tool">
       <div class="progress-wrap" aria-label="Progress">
@@ -127,45 +127,45 @@
       </div>
 
       <section class="panel active" data-step="1">
-        <h2>What matters to you in your work?</h2>
-        <p class="prompt">Think about the conditions and experiences you would value in future work. Choose 3–5.</p>
+        <h2>What sounds important to you right now?</h2>
+        <p class="prompt">Choose 3–5 things that sound important to you. You do not need to know whether they will matter forever.</p>
         <div class="choices" id="valuesChoices"></div>
         <div class="counter" id="valuesCount">0 of 5 selected</div>
         <div class="actions"><span></span><button class="primary" id="next1" disabled>Next</button></div>
       </section>
 
       <section class="panel" data-step="2">
-        <h2>What kinds of topics or problems catch your attention?</h2>
-        <p class="prompt">Choose topics you would genuinely like to understand, work on, or learn more about. You do not have to be good at them already.</p>
+        <h2>What are you curious about?</h2>
+        <p class="prompt">Choose topics, issues, or questions you would be interested in learning more about. You do not need experience with them already.</p>
         <div class="choices" id="curiosityChoices"></div>
         <div class="counter" id="curiosityCount">Choose at least 2</div>
         <div class="actions"><button class="secondary back">Back</button><button class="primary" id="next2" disabled>Next</button></div>
       </section>
 
       <section class="panel" data-step="3">
-        <h2>What kinds of work would you like to spend more time doing?</h2>
-        <p class="prompt">Choose activities that sound satisfying, interesting, or worth trying. Pick 3–6.</p>
+        <h2>What sounds like something you might enjoy doing?</h2>
+        <p class="prompt">Choose 3–6 activities that sound interesting, satisfying, or simply worth trying.</p>
         <div class="choices" id="activityChoices"></div>
         <div class="counter" id="activityCount">0 selected</div>
         <div class="actions"><button class="secondary back">Back</button><button class="primary" id="showResults" disabled>Show directions</button></div>
       </section>
 
       <section class="panel" data-step="4">
-        <h2>Directions worth investigating</h2>
-        <p class="prompt">Here are three strong connections plus one additional direction you may not have considered. Use them as starting points for research—not answers.</p>
+        <h2>Places you could start exploring</h2>
+        <p class="prompt">Here are a few directions connected to what you chose. These are not recommendations for what you should do—just places that may be worth a closer look.</p>
         <div id="results" class="results"></div>
 
         <div class="summary" id="noFitBox">
-          <h3>Not seeing yourself here?</h3>
-          <p>That is useful information too. Your results are only starting points, and you do not need to force a fit.</p>
+          <h3>Nothing grabbing you yet?</h3>
+          <p>That is useful information too. You do not need to force yourself into one of these directions. Sometimes a different starting point works better.</p>
           <div class="actions" style="margin-top:12px;justify-content:flex-start">
-            <button class="secondary" id="changeSelections">Change my selections</button>
+            <button class="secondary" id="changeSelections">Try different selections</button>
             <a class="community-link" href="https://careers.uiowa.edu/career-communities" target="_blank" rel="noopener noreferrer">Browse all Career Communities ↗</a>
           </div>
-          <p class="small" style="margin-top:10px">You can also use Challenge Cards or another exploration activity to start from a different question.</p>
+          <p class="small" style="margin-top:10px">Try starting from a different angle, such as challenges you want to solve, experiences you have enjoyed, or careers you have already encountered.</p>
         </div>
         <div class="summary">
-          <h3>Your exploration snapshot</h3>
+          <h3>Your starting-point snapshot</h3>
           <div id="snapshot" class="copybox"></div>
           <div class="actions" style="margin-top:12px">
             <button class="primary" id="printSnapshot">Print or save</button>
@@ -174,7 +174,7 @@
           </div>
           <p class="small" id="copyStatus" aria-live="polite" style="margin-top:8px"></p>
         </div>
-        <div class="next-step"><strong>Next step:</strong> Choose one direction that makes you curious. Look at 2–3 occupations in that area and notice which work activities, settings, and requirements appeal to you—and which do not.</div>
+        <div class="next-step"><strong>Next step:</strong> Choose one direction that makes you even a little curious. Look at 2–3 occupations in that area and ask only: <em>Do I want to know more?</em> Notice what interests you, what does not, and what questions come up.</div>
       </section>
     </div>
 
@@ -350,7 +350,7 @@ function buildResults(){
       <ul class="examples">${d.examples.map(x=>`<li>${x}</li>`).join('')}</ul>
       <div class="community-label"><strong>University of Iowa resources:</strong> Explore the Career Community page${d.communities?.length>1?'s':''} that connect with this direction.</div>
       <div class="community-links">${(d.communities||[]).map(c=>`<a class="community-link" href="${c[1]}" target="_blank" rel="noopener noreferrer">${c[0]} ↗</a>`).join('')}</div>
-      <button type="button" class="explore-btn">Explore this</button>
+      <button type="button" class="explore-btn">See what’s here</button>
       <div class="explore-panel">
         <strong>Questions to investigate:</strong>
         <div class="question-grid">
@@ -365,7 +365,7 @@ function buildResults(){
     card.querySelector('.explore-btn').addEventListener('click',e=>{
       const panel=card.querySelector('.explore-panel');
       panel.classList.toggle('open');
-      e.currentTarget.textContent=panel.classList.contains('open')?'Hide questions':'Explore this';
+      e.currentTarget.textContent=panel.classList.contains('open')?'Hide questions':'See what’s here';
     });
     results.appendChild(card);
   });
