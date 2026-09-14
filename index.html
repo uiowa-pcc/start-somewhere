@@ -3,6 +3,411 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Start Somewhere | University of Iowa Career Exploration</title>
+  <style>
+    :root{
+      --black:#111111;
+      --text:#2b2b2b;
+      --muted:#5f5f5f;
+      --line:#d6d6d6;
+      --gray-50:#fafafa;
+      --gray-100:#f1f1f1;
+      --gray-200:#e4e4e4;
+      --yellow:#ffcd00;
+      --white:#ffffff;
+      --radius:12px;
+      --shadow:0 3px 12px rgba(0,0,0,.05);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Roboto, Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background:var(--white);
+      line-height:1.5;
+    }
+    button,a{font:inherit}
+    .skip{
+      position:absolute;left:-9999px;top:8px;background:#fff;color:#111;
+      border:2px solid #111;padding:8px 12px;border-radius:8px;z-index:999;
+    }
+    .skip:focus{left:8px}
+    .wrap{max-width:940px;margin:0 auto;padding:26px 20px 52px}
+    h1{font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.05;margin:0 0 12px;color:var(--black);letter-spacing:-.02em}
+    h2{font-size:1.5rem;line-height:1.18;margin:0 0 8px;color:var(--black)}
+    h3{font-size:1.1rem;line-height:1.25;margin:0 0 6px;color:var(--black)}
+    p{margin:0 0 12px}
+    .intro{font-size:1.05rem;max-width:780px;color:#3f3f3f}
+    .note{
+      background:var(--gray-50);border:1px solid var(--gray-200);
+      padding:14px 16px;margin:18px 0 24px;border-radius:10px;
+    }
+    .progress-wrap{margin:24px 0 8px}
+    .progress-label{font-size:.9rem;font-weight:700;color:var(--muted);margin-bottom:7px}
+    .progress{height:7px;background:var(--gray-200);border-radius:999px;overflow:hidden}
+    .progress > div{height:100%;width:25%;background:var(--black);transition:width .2s ease}
+    .panel{display:none;margin-top:26px}
+    .panel.active{display:block}
+    .prompt{font-size:1rem;margin-bottom:16px;color:var(--muted);max-width:800px}
+    .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .choice{
+      width:100%;text-align:left;background:var(--white);border:1.5px solid #c8c8c8;
+      padding:13px 14px;border-radius:10px;cursor:pointer;font-size:1rem;
+      transition:background .12s ease,border-color .12s ease,box-shadow .12s ease;color:var(--text)
+    }
+    .choice:hover{background:var(--gray-50);border-color:#8d8d8d}
+    .choice:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+    .choice.selected{background:var(--gray-100);border-color:#555;font-weight:700;box-shadow:inset 0 0 0 1px #555}
+    .counter{font-size:.9rem;color:var(--muted);margin-top:10px}
+    .actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:22px;flex-wrap:wrap}
+    button.primary,button.secondary,button.ghost,.explore-btn{
+      appearance:none;border:1.5px solid var(--black);border-radius:9px;
+      padding:11px 16px;font-size:1rem;font-weight:800;cursor:pointer;
+      transition:transform .1s ease,background .12s ease;
+    }
+    button.primary{background:var(--black);color:var(--white)}
+    button.secondary,button.ghost,.explore-btn{background:var(--white);color:var(--black)}
+    button.secondary{border-color:#aaa}
+    button.ghost{border-color:#bdbdbd}
+    button:not(:disabled):hover,.explore-btn:hover{transform:translateY(-1px)}
+    button:focus-visible,.explore-btn:focus-visible,.community-link:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+    button:disabled{opacity:.42;cursor:not-allowed;transform:none}
+    .results{display:grid;gap:14px;margin-top:18px}
+    .result-card{border:1px solid var(--gray-200);border-radius:var(--radius);padding:18px;background:var(--white);box-shadow:var(--shadow)}
+    .result-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+    .badge{display:inline-block;font-size:.78rem;font-weight:800;padding:5px 8px;background:var(--gray-100);border-radius:999px;color:#4f4f4f;white-space:nowrap}
+    .why{margin-top:8px;color:#4f4f4f}
+    .examples{margin:12px 0 0;padding-left:20px}
+    .examples li{margin:4px 0}
+    .community-label{margin-top:14px;font-size:.94rem;color:#555}
+    .community-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .community-link{display:inline-block;text-decoration:none;border:1px solid #bdbdbd;border-radius:9px;padding:9px 12px;font-weight:700;color:#111;background:#fff}
+    .community-link:hover{background:var(--gray-50)}
+    .explore-btn{margin-top:14px;padding:9px 12px}
+    .explore-panel{display:none;margin-top:12px;padding:14px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px}
+    .explore-panel.open{display:block}
+    .question-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+    .qchip{padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--white);font-size:.92rem}
+    .summary{margin-top:22px;padding:18px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:12px}
+    .copybox{white-space:pre-wrap;background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:10px;font-family:inherit}
+    .small{font-size:.9rem;color:var(--muted)}
+    .additional-result{border-style:dashed;background:#fcfcfc}
+    .next-step{margin-top:22px;padding:15px 16px;background:#fff;border:1px solid var(--gray-200);border-left:5px solid var(--black);border-radius:0 10px 10px 0}
+    @media (max-width:700px){
+      .choices,.question-grid{grid-template-columns:1fr}
+      .wrap{padding:20px 14px 42px}
+      .result-top{display:block}
+      .badge{margin-top:8px}
+      .actions{align-items:stretch}
+      .actions button{min-height:44px}
+    }
+    @media print{
+      .skip,.progress-wrap,.actions,.explore-btn{display:none!important}
+      .wrap{max-width:none;padding:0}
+      .panel{display:none!important}
+      .panel[data-step="4"]{display:block!important;margin-top:0}
+      .result-card,.summary{box-shadow:none;break-inside:avoid}
+      .explore-panel{display:none!important}
+      a{color:#111;text-decoration:none}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#tool">Skip to activity</a>
+  <main class="wrap">
+    <h1>Start Somewhere</h1>
+    <p class="intro">Not sure what you want to do yet? You do not need a career goal to get started. Choose a few things that sound important, interesting, or worth trying. We’ll connect those reactions to University of Iowa career areas and example careers you can explore next.</p>
+    <div class="note"><strong>This is a starting point, not an assessment.</strong> Your results are meant to give you a few places to begin—not tell you what you should do or what you should major in. Career examples in this tool are grounded in University of Iowa Career Community resources. Notice what makes you curious, what does not, and what you want to learn more about.</div>
+
+    <div id="tool">
+      <div class="progress-wrap" aria-label="Progress">
+        <div class="progress-label" id="progressLabel">Step 1 of 4</div>
+        <div class="progress"><div id="progressBar"></div></div>
+      </div>
+
+      <section class="panel active" data-step="1">
+        <h2>What sounds important to you right now?</h2>
+        <p class="prompt">Choose 3–5 things that sound important to you. You do not need to know whether they will matter forever.</p>
+        <div class="choices" id="valuesChoices"></div>
+        <div class="counter" id="valuesCount">0 of 5 selected</div>
+        <div class="actions"><span></span><button class="primary" id="next1" disabled>Next</button></div>
+      </section>
+
+      <section class="panel" data-step="2">
+        <h2>What are you curious about?</h2>
+        <p class="prompt">Choose topics, issues, or questions you would be interested in learning more about. You do not need experience with them already.</p>
+        <div class="choices" id="curiosityChoices"></div>
+        <div class="counter" id="curiosityCount">Choose at least 2</div>
+        <div class="actions"><button class="secondary back">Back</button><button class="primary" id="next2" disabled>Next</button></div>
+      </section>
+
+      <section class="panel" data-step="3">
+        <h2>What sounds like something you might enjoy doing?</h2>
+        <p class="prompt">Choose 3–6 activities that sound interesting, satisfying, or simply worth trying.</p>
+        <div class="choices" id="activityChoices"></div>
+        <div class="counter" id="activityCount">0 selected</div>
+        <div class="actions"><button class="secondary back">Back</button><button class="primary" id="showResults" disabled>Show directions</button></div>
+      </section>
+
+      <section class="panel" data-step="4">
+        <h2>Places you could start exploring</h2>
+        <p class="prompt">Here are a few University of Iowa career areas connected to what you chose. These are not recommendations for what you should do—or what you should major in—just places that may be worth a closer look.</p>
+        <div id="results" class="results"></div>
+
+        <div class="summary" id="noFitBox">
+          <h3>Nothing grabbing you yet?</h3>
+          <p>That is useful information too. You do not need to force yourself into one of these directions. Sometimes a different starting point works better.</p>
+          <div class="actions" style="margin-top:12px;justify-content:flex-start">
+            <button class="secondary" id="changeSelections">Try different selections</button>
+            <a class="community-link" href="https://careers.uiowa.edu/career-communities" target="_blank" rel="noopener noreferrer">Browse all Career Communities ↗</a>
+          </div>
+          <p class="small" style="margin-top:10px">Try starting from a different angle, such as challenges you want to solve, experiences you have enjoyed, or careers you have already encountered.</p>
+        </div>
+        <div class="summary">
+          <h3>Your starting-point snapshot</h3>
+          <div id="snapshot" class="copybox"></div>
+          <div class="actions" style="margin-top:12px">
+            <button class="primary" id="printSnapshot">Print or save</button>
+            <button class="ghost" id="copySnapshot">Copy my results</button>
+            <button class="secondary" id="restart">Start over</button>
+          </div>
+          <p class="small" id="copyStatus" aria-live="polite" style="margin-top:8px"></p>
+        </div>
+        <div class="summary">
+          <h3>Keep exploring at Iowa</h3>
+          <p class="small">Use these University of Iowa resources to test a direction before making any big decisions.</p>
+          <div class="community-links">
+            <a class="community-link" href="https://careers.uiowa.edu/career-communities" target="_blank" rel="noopener noreferrer">Career Communities ↗</a>
+            <a class="community-link" href="https://careers.uiowa.edu/explore" target="_blank" rel="noopener noreferrer">Explore careers ↗</a>
+            <a class="community-link" href="https://careers.uiowa.edu/handshake" target="_blank" rel="noopener noreferrer">Search Handshake ↗</a>
+            <a class="community-link" href="https://careers.uiowa.edu/post-graduation-data" target="_blank" rel="noopener noreferrer">Hawkeye outcomes ↗</a>
+          </div>
+        </div>
+        <div class="next-step"><strong>Next step:</strong> Choose one direction that makes you even a little curious. Open its University of Iowa Career Community page, scan the career examples and resources, then look more closely at 2–3 occupations. Ask only: <em>Do I want to know more?</em></div>
+      </section>
+    </div>
+
+  </main>
+
+<script>
+const values = [
+  {label:'Doing work that feels meaningful', codes:['relationships','achievement']},
+  {label:'Helping or contributing to others', codes:['relationships']},
+  {label:'Having stability and dependable opportunities', codes:['conditions']},
+  {label:'Having strong earning potential', codes:['conditions','recognition']},
+  {label:'Having flexibility in when, where, or how I work', codes:['independence','conditions']},
+  {label:'Having work-life balance and manageable demands', codes:['conditions']},
+  {label:'Having independence in how I approach my work', codes:['independence']},
+  {label:'Having room to be creative or try new approaches', codes:['independence','achievement']},
+  {label:'Learning, growing, and taking on new challenges', codes:['achievement']},
+  {label:'Working with people I respect and enjoy', codes:['relationships','support']},
+  {label:'Having supportive leadership and a healthy workplace', codes:['support']},
+  {label:'Having opportunities to lead, advance, or influence decisions', codes:['recognition']},
+  {label:'Having variety rather than doing the same thing every day', codes:['independence','conditions']},
+  {label:'Having clear expectations and useful feedback', codes:['support','conditions']}
+];
+
+const curiosities = [
+  {label:'Mental health, well-being, and human development', codes:['social','investigative']},
+  {label:'Teaching, learning, and how people develop skills', codes:['social','investigative']},
+  {label:'Health, medicine, and the human body', codes:['investigative','social']},
+  {label:'Science, discovery, and how the natural world works', codes:['investigative','realistic']},
+  {label:'Environment, climate, and sustainability', codes:['investigative','realistic','social']},
+  {label:'Technology, computing, and digital systems', codes:['investigative','realistic']},
+  {label:'Data, patterns, and using evidence to answer questions', codes:['investigative','conventional']},
+  {label:'Engineering, building, and how things work', codes:['realistic','investigative']},
+  {label:'Art, media, storytelling, and culture', codes:['artistic']},
+  {label:'Writing, language, communication, and ideas', codes:['artistic','social']},
+  {label:'Business, organizations, and how work gets done', codes:['enterprising','conventional']},
+  {label:'Money, markets, economics, and financial decisions', codes:['enterprising','conventional','investigative']},
+  {label:'Law, justice, rights, and public issues', codes:['enterprising','social','investigative']},
+  {label:'Government, policy, and how systems shape communities', codes:['social','enterprising','investigative']},
+  {label:'Communities, inequality, and social change', codes:['social','investigative']},
+  {label:'Sports, performance, recreation, and movement', codes:['realistic','social','enterprising']}
+];
+
+const activities = [
+  {label:'Build, make, repair, or work hands-on', codes:['realistic']},
+  {label:'Analyze information, data, or complex problems', codes:['investigative']},
+  {label:'Research and learn deeply about a topic', codes:['investigative']},
+  {label:'Write, create, perform, or tell stories', codes:['artistic']},
+  {label:'Design something new or improve how it looks/feels', codes:['artistic']},
+  {label:'Teach, explain, coach, or help someone learn', codes:['social']},
+  {label:'Listen, support, counsel, or care for people', codes:['social']},
+  {label:'Advocate for people or improve communities', codes:['social','enterprising']},
+  {label:'Lead, persuade, negotiate, or influence decisions', codes:['enterprising']},
+  {label:'Coordinate people, projects, events, or programs', codes:['enterprising','conventional']},
+  {label:'Organize information and keep systems running smoothly', codes:['conventional']},
+  {label:'Work with numbers, records, details, or processes', codes:['conventional']},
+  {label:'Communicate ideas to different audiences', codes:['social','artistic','enterprising']},
+  {label:'Solve practical problems and improve how something works', codes:['realistic','investigative']},
+  {label:'Evaluate programs, products, policies, or outcomes', codes:['investigative','conventional']}
+];
+
+const directions = [
+  // Career examples and community mappings were refreshed against University of Iowa Career Community resources in September 2026.
+  {name:'Creative Arts, Museums & Culture', riasec:['A','S'], values:['independence','achievement'], topics:['Art, media, storytelling, and culture','Writing, language, communication, and ideas'], acts:['Write, create, perform, or tell stories','Design something new or improve how it looks/feels','Communicate ideas to different audiences'], examples:['Arts administration','Curatorial and collections work','Exhibit design','Museum education'], communities:[['Arts, Media & Entertainment','https://careers.uiowa.edu/career-communities/ame']]},
+  {name:'Writing, Media & Communications', riasec:['A','E','S'], values:['achievement','recognition'], topics:['Writing, language, communication, and ideas','Art, media, storytelling, and culture','Business, organizations, and how work gets done'], acts:['Write, create, perform, or tell stories','Communicate ideas to different audiences','Lead, persuade, negotiate, or influence decisions'], examples:['Public relations','Journalism and reporting','Content, copywriting, and editing','Broadcasting and production'], communities:[['Arts, Media & Entertainment','https://careers.uiowa.edu/career-communities/ame']]},
+  {name:'Design & Digital Experience', riasec:['A','I','R'], values:['independence','achievement'], topics:['Art, media, storytelling, and culture','Technology, computing, and digital systems'], acts:['Design something new or improve how it looks/feels','Communicate ideas to different audiences','Solve practical problems and improve how something works'], examples:['Graphic design','Web design','UX design','Multimedia and digital content'], communities:[['Arts, Media & Entertainment','https://careers.uiowa.edu/career-communities/ame'],['Data & Information Technology','https://careers.uiowa.edu/career-communities/data-info-tech']]},
+  {name:'Business Analysis & Operations', riasec:['E','C','I'], values:['achievement','recognition','conditions'], topics:['Business, organizations, and how work gets done','Data, patterns, and using evidence to answer questions'], acts:['Coordinate people, projects, events, or programs','Analyze information, data, or complex problems','Organize information and keep systems running smoothly','Evaluate programs, products, policies, or outcomes'], examples:['Business analyst','Operations','Project management','Supply chain and logistics'], communities:[['Business, Entrepreneurship & Leadership','https://careers.uiowa.edu/career-communities/business']]},
+  {name:'Marketing, Entrepreneurship & Innovation', riasec:['E','A','I'], values:['independence','achievement','recognition'], topics:['Business, organizations, and how work gets done','Art, media, storytelling, and culture','Writing, language, communication, and ideas'], acts:['Lead, persuade, negotiate, or influence decisions','Communicate ideas to different audiences','Write, create, perform, or tell stories','Coordinate people, projects, events, or programs'], examples:['Digital marketing and branding','Business development','Startup and innovation work','Strategy and consulting'], communities:[['Business, Entrepreneurship & Leadership','https://careers.uiowa.edu/career-communities/business'],['Arts, Media & Entertainment','https://careers.uiowa.edu/career-communities/ame']]},
+  {name:'Finance, Accounting & Risk', riasec:['C','E','I'], values:['conditions','recognition','achievement'], topics:['Money, markets, economics, and financial decisions','Data, patterns, and using evidence to answer questions','Business, organizations, and how work gets done'], acts:['Work with numbers, records, details, or processes','Analyze information, data, or complex problems','Organize information and keep systems running smoothly'], examples:['Accounting and audit','Banking and financial analysis','Insurance and underwriting','Risk and actuarial work'], communities:[['Business, Entrepreneurship & Leadership','https://careers.uiowa.edu/career-communities/business'],['Data & Information Technology','https://careers.uiowa.edu/career-communities/data-info-tech']]},
+  {name:'Data Analytics & Information', riasec:['I','C'], values:['achievement','independence'], topics:['Data, patterns, and using evidence to answer questions','Technology, computing, and digital systems','Money, markets, economics, and financial decisions'], acts:['Analyze information, data, or complex problems','Work with numbers, records, details, or processes','Evaluate programs, products, policies, or outcomes'], examples:['Data analyst','Business intelligence','Data reporting and services','Information systems'], communities:[['Data & Information Technology','https://careers.uiowa.edu/career-communities/data-info-tech'],['Business, Entrepreneurship & Leadership','https://careers.uiowa.edu/career-communities/business']]},
+  {name:'Computing & Technology', riasec:['I','R','C'], values:['achievement','independence','conditions'], topics:['Technology, computing, and digital systems','Data, patterns, and using evidence to answer questions','Engineering, building, and how things work'], acts:['Analyze information, data, or complex problems','Solve practical problems and improve how something works','Organize information and keep systems running smoothly'], examples:['Software and programming','IT and technology','Information systems','Technical project management'], communities:[['Data & Information Technology','https://careers.uiowa.edu/career-communities/data-info-tech']]},
+  {name:'Engineering & Applied Problem Solving', riasec:['R','I'], values:['achievement','independence'], topics:['Engineering, building, and how things work','Technology, computing, and digital systems','Science, discovery, and how the natural world works'], acts:['Build, make, repair, or work hands-on','Solve practical problems and improve how something works','Design something new or improve how it looks/feels'], examples:['Engineering design','Product and process improvement','Manufacturing systems','Technical problem-solving'], communities:[['Engineering Career Services','https://engineering.uiowa.edu/career-services']]},
+  {name:'Scientific Research & Laboratory Work', riasec:['I','R'], values:['achievement','independence'], topics:['Science, discovery, and how the natural world works','Health, medicine, and the human body','Environment, climate, and sustainability'], acts:['Research and learn deeply about a topic','Analyze information, data, or complex problems','Build, make, repair, or work hands-on'], examples:['Research assistant or technician','Lab technician or analyst','Clinical research','Quality control and R&D'], communities:[['Science Research','https://careers.uiowa.edu/career-communities/science-research']]},
+  {name:'Environment & Sustainability', riasec:['I','R','S'], values:['relationships','achievement'], topics:['Environment, climate, and sustainability','Science, discovery, and how the natural world works','Government, policy, and how systems shape communities'], acts:['Research and learn deeply about a topic','Solve practical problems and improve how something works','Advocate for people or improve communities'], examples:['Conservation and natural resources','Sustainability and ESG','Environmental science and GIS','Environmental policy and planning'], communities:[['Environment & Sustainability','https://careers.uiowa.edu/career-communities/environment-sustainability']]},
+  {name:'Health Care & Patient Support', riasec:['S','I','R'], values:['relationships','achievement','conditions'], topics:['Health, medicine, and the human body','Mental health, well-being, and human development','Science, discovery, and how the natural world works'], acts:['Listen, support, counsel, or care for people','Build, make, repair, or work hands-on','Research and learn deeply about a topic'], examples:['Patient care and nursing support','Rehabilitation and therapy support','Diagnostic and clinical technology','Emergency medical services'], communities:[['Health & Wellness','https://careers.uiowa.edu/career-communities/health-wellness']]},
+  {name:'Public Health, Wellness & Health Education', riasec:['S','I','E'], values:['relationships','achievement'], topics:['Health, medicine, and the human body','Communities, inequality, and social change','Teaching, learning, and how people develop skills'], acts:['Teach, explain, coach, or help someone learn','Advocate for people or improve communities','Evaluate programs, products, policies, or outcomes'], examples:['Health promotion and education','Public health','Fitness and exercise','Community health and outreach'], communities:[['Health & Wellness','https://careers.uiowa.edu/career-communities/health-wellness']]},
+  {name:'Teaching & Learning', riasec:['S','A','I'], values:['relationships','achievement','support'], topics:['Teaching, learning, and how people develop skills','Writing, language, communication, and ideas'], acts:['Teach, explain, coach, or help someone learn','Communicate ideas to different audiences','Coordinate people, projects, events, or programs'], examples:['K–12 teaching','Interventionist or strategist roles','Academic support','Instructional design and education programs'], communities:[['Education K–12','https://careers.uiowa.edu/career-communities/education']]},
+  {name:'Counseling & Human Services', riasec:['S','I'], values:['relationships','support','achievement'], topics:['Mental health, well-being, and human development','Communities, inequality, and social change'], acts:['Listen, support, counsel, or care for people','Advocate for people or improve communities','Teach, explain, coach, or help someone learn'], examples:['Behavioral health','Case management','Rehabilitation services','Youth and family services'], communities:[['Helping & Counseling','https://careers.uiowa.edu/career-communities/helping-counseling']]},
+  {name:'Government, Policy & Public Administration', riasec:['E','S','I'], values:['relationships','achievement','recognition'], topics:['Government, policy, and how systems shape communities','Law, justice, rights, and public issues','Communities, inequality, and social change'], acts:['Analyze information, data, or complex problems','Communicate ideas to different audiences','Advocate for people or improve communities'], examples:['Policy analysis and research','Public administration','Legislative or constituent services','Regulatory or grants administration'], communities:[['Law & Public Service','https://careers.uiowa.edu/career-communities/law-public-service']]},
+  {name:'Law, Justice & Public Safety', riasec:['E','S','I'], values:['achievement','recognition','relationships'], topics:['Law, justice, rights, and public issues','Government, policy, and how systems shape communities'], acts:['Lead, persuade, negotiate, or influence decisions','Advocate for people or improve communities','Analyze information, data, or complex problems'], examples:['Legal support and paralegal work','Compliance and mediation','Law enforcement and corrections','Crime analysis and investigations'], communities:[['Law & Public Service','https://careers.uiowa.edu/career-communities/law-public-service']]},
+  {name:'Nonprofit, Advocacy & Community Work', riasec:['S','E','C'], values:['relationships','support','achievement'], topics:['Communities, inequality, and social change','Government, policy, and how systems shape communities','Mental health, well-being, and human development'], acts:['Advocate for people or improve communities','Coordinate people, projects, events, or programs','Communicate ideas to different audiences'], examples:['Nonprofit administration','Community outreach','Advocacy and organizing','Program or volunteer management'], communities:[['Law & Public Service','https://careers.uiowa.edu/career-communities/law-public-service'],['Helping & Counseling','https://careers.uiowa.edu/career-communities/helping-counseling']]},
+  {name:'Human Resources & People Development', riasec:['S','E','C'], values:['relationships','support','recognition'], topics:['Business, organizations, and how work gets done','Teaching, learning, and how people develop skills','Mental health, well-being, and human development'], acts:['Listen, support, counsel, or care for people','Teach, explain, coach, or help someone learn','Coordinate people, projects, events, or programs'], examples:['Human resources','Recruiting and talent acquisition','Training and learning programs','People-focused management and operations'], communities:[['Business, Entrepreneurship & Leadership','https://careers.uiowa.edu/career-communities/business'],['Education K–12','https://careers.uiowa.edu/career-communities/education']]},
+  {name:'Research, Evaluation & Policy Insights', riasec:['I','C','S'], values:['achievement','independence'], topics:['Data, patterns, and using evidence to answer questions','Government, policy, and how systems shape communities','Communities, inequality, and social change'], acts:['Evaluate programs, products, policies, or outcomes','Research and learn deeply about a topic','Analyze information, data, or complex problems'], examples:['Program evaluation','Research analyst or associate','Policy research','Program analysis'], communities:[['Law & Public Service','https://careers.uiowa.edu/career-communities/law-public-service'],['Helping & Counseling','https://careers.uiowa.edu/career-communities/helping-counseling']]},
+  {name:'Project, Program & Event Management', riasec:['E','C','S'], values:['achievement','recognition','support'], topics:['Business, organizations, and how work gets done','Government, policy, and how systems shape communities','Art, media, storytelling, and culture'], acts:['Coordinate people, projects, events, or programs','Organize information and keep systems running smoothly','Evaluate programs, products, policies, or outcomes'], examples:['Project management','Program management','Event operations','Operations coordination'], communities:[['Business, Entrepreneurship & Leadership','https://careers.uiowa.edu/career-communities/business'],['Arts, Media & Entertainment','https://careers.uiowa.edu/career-communities/ame']]},
+  {name:'Sports & Recreation', riasec:['R','S','E'], values:['relationships','achievement'], topics:['Sports, performance, recreation, and movement','Health, medicine, and the human body','Business, organizations, and how work gets done'], acts:['Teach, explain, coach, or help someone learn','Coordinate people, projects, events, or programs','Listen, support, counsel, or care for people'], examples:['Athletics administration and operations','Recreation and facility management','Sports marketing and communications','Fitness and wellness'], communities:[['Arts, Media & Entertainment','https://careers.uiowa.edu/career-communities/ame'],['Health & Wellness','https://careers.uiowa.edu/career-communities/health-wellness']]}
+];
+
+const state={values:new Set(),curiosities:new Set(),activities:new Set()};
+function renderChoices(items, containerId, bucket, max=null){
+  const el=document.getElementById(containerId);
+  items.forEach(item=>{
+    const b=document.createElement('button');
+    b.type='button'; b.className='choice'; b.textContent=item.label; b.setAttribute('aria-pressed','false');
+    b.addEventListener('click',()=>{
+      const set=state[bucket];
+      if(set.has(item.label)){set.delete(item.label);b.classList.remove('selected');b.setAttribute('aria-pressed','false');}
+      else{
+        if(max && set.size>=max) return;
+        set.add(item.label);b.classList.add('selected');b.setAttribute('aria-pressed','true');
+      }
+      updateControls();
+    });
+    el.appendChild(b);
+  });
+}
+renderChoices(values,'valuesChoices','values',5);
+renderChoices(curiosities,'curiosityChoices','curiosities');
+renderChoices(activities,'activityChoices','activities',6);
+
+function updateControls(){
+  document.getElementById('valuesCount').textContent=`${state.values.size} of 5 selected — choose at least 3`;
+  document.getElementById('curiosityCount').textContent=`${state.curiosities.size} selected — choose at least 2`;
+  document.getElementById('activityCount').textContent=`${state.activities.size} selected — choose 3 to 6`;
+  document.getElementById('next1').disabled=state.values.size<3;
+  document.getElementById('next2').disabled=state.curiosities.size<2;
+  document.getElementById('showResults').disabled=state.activities.size<3;
+}
+
+let step=1;
+function goTo(n){
+  step=n;
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',Number(p.dataset.step)===n));
+  document.getElementById('progressLabel').textContent=`Step ${n} of 4`;
+  document.getElementById('progressBar').style.width=`${n*25}%`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('next1').onclick=()=>goTo(2);
+document.getElementById('next2').onclick=()=>goTo(3);
+document.querySelectorAll('.back').forEach(btn=>btn.addEventListener('click',()=>goTo(step-1)));
+document.getElementById('showResults').onclick=()=>{buildResults();goTo(4)};
+
+function selectedCodes(items, selectedSet){
+  const codes=[];
+  items.filter(x=>selectedSet.has(x.label)).forEach(x=>codes.push(...x.codes));
+  return codes;
+}
+
+function scoreDirection(d){
+  const valueCodes=selectedCodes(values,state.values);
+  const interestCodes=selectedCodes(curiosities,state.curiosities);
+  const activityCodes=selectedCodes(activities,state.activities);
+  const valueMatch=d.values.reduce((n,c)=>n+valueCodes.filter(x=>x===c).length,0);
+  const riasecMap={realistic:'R',investigative:'I',artistic:'A',social:'S',enterprising:'E',conventional:'C'};
+  const interestRIASEC=interestCodes.map(c=>riasecMap[c]).filter(Boolean);
+  const activityRIASEC=activityCodes.map(c=>riasecMap[c]).filter(Boolean);
+  const interestMatch=d.riasec.reduce((n,c)=>n+interestRIASEC.filter(x=>x===c).length,0);
+  const activityMatch=d.riasec.reduce((n,c)=>n+activityRIASEC.filter(x=>x===c).length,0);
+  const topicMatches=[...state.curiosities].filter(x=>d.topics.includes(x));
+  const actMatches=[...state.activities].filter(x=>d.acts.includes(x));
+  const valueLabels=[...state.values].filter(label=>{
+    const item=values.find(v=>v.label===label);
+    return item && item.codes.some(c=>d.values.includes(c));
+  });
+  // Activities and topics carry the most weight; values refine rather than determine fit.
+  const score=(topicMatches.length*5)+(actMatches.length*5)+(interestMatch*1.25)+(activityMatch*1.25)+(valueMatch*0.75);
+  const matches=[...topicMatches.slice(0,2),...actMatches.slice(0,2),...valueLabels.slice(0,1)];
+  return {score,matches};
+}
+
+function buildResults(){
+  const ranked=directions.map(d=>({...d,...scoreDirection(d)})).sort((a,b)=>b.score-a.score || a.name.localeCompare(b.name));
+  const strongest=ranked.slice(0,3);
+  const additional=ranked[3];
+  const top=additional ? [...strongest, additional] : strongest;
+  const results=document.getElementById('results');
+  results.innerHTML='';
+  top.forEach((d,i)=>{
+    const matched = d.matches.slice(0,4);
+    const card=document.createElement('article'); card.className='result-card'+(i===3?' additional-result':'');
+    card.innerHTML=`
+      <div class="result-top">
+        <div>${i===3?'<p class="small"><strong>A less-obvious possibility</strong></p>':''}<h3>${d.name}</h3><p class="why"><strong>Why it appeared:</strong> ${matched.length ? 'Connects with '+matched.join(', ')+'.' : 'It shares themes with several of your selections.'}</p></div>
+        <span class="badge">${i<3?'Worth exploring':'Another possibility'}</span>
+      </div>
+      <ul class="examples">${d.examples.map(x=>`<li>${x}</li>`).join('')}</ul>
+      <div class="community-label"><strong>Explore at Iowa:</strong> These career examples come from the University of Iowa resources linked below.</div>
+      <div class="community-links">${(d.communities||[]).map(c=>`<a class="community-link" href="${c[1]}" target="_blank" rel="noopener noreferrer">${c[0]} ↗</a>`).join('')}</div>
+      <button type="button" class="explore-btn">See what’s here</button>
+      <div class="explore-panel">
+        <strong>Questions to investigate:</strong>
+        <div class="question-grid">
+          <div class="qchip">What careers are in this area?</div>
+          <div class="qchip">What do people actually do?</div>
+          <div class="qchip">What education or training is usually needed?</div>
+          <div class="qchip">What skills are important?</div>
+          <div class="qchip">What are the pay and outlook?</div>
+          <div class="qchip">How could I try this out at Iowa?</div>
+        </div>
+      </div>`;
+    card.querySelector('.explore-btn').addEventListener('click',e=>{
+      const panel=card.querySelector('.explore-panel');
+      panel.classList.toggle('open');
+      e.currentTarget.textContent=panel.classList.contains('open')?'Hide questions':'See what’s here';
+    });
+    results.appendChild(card);
+  });
+  const snapshot=`What matters to me: ${[...state.values].join(', ')}\n\nTopics/problems that catch my attention: ${[...state.curiosities].join(', ')}\n\nKinds of work I'd like to do more of: ${[...state.activities].join(', ')}\n\nDirections worth investigating: ${top.map(x=>x.name).join(', ')}`;
+  document.getElementById('snapshot').textContent=snapshot;
+}
+
+document.getElementById('printSnapshot').onclick=()=>window.print();
+
+document.getElementById('copySnapshot').onclick=async()=>{
+  const text=document.getElementById('snapshot').textContent;
+  try{await navigator.clipboard.writeText(text);document.getElementById('copyStatus').textContent='Copied to clipboard.';}
+  catch(e){document.getElementById('copyStatus').textContent='Select the text above and copy it manually.';}
+};
+
+document.getElementById('changeSelections').onclick=()=>goTo(1);
+
+document.getElementById('restart').onclick=()=>{
+  state.values.clear();state.curiosities.clear();state.activities.clear();
+  document.querySelectorAll('.choice.selected').forEach(b=>{b.classList.remove('selected');b.setAttribute('aria-pressed','false')});
+  updateControls();document.getElementById('copyStatus').textContent='';goTo(1);
+};
+
+updateControls();
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>What Could Fit?</title>
   <style>
     :root{
